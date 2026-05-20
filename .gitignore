@@ -1,0 +1,15 @@
+# Secrets — never commit. Provide your own data/secrets.json locally.
+data/secrets.json
+
+# Python
+__pycache__/
+*.pyc
+
+# Local preview staging
+.arb-preview/
+
+# Local Claude Code config (launch.json, settings.local.json, worktrees, etc.)
+.claude/
+
+# macOS
+.DS_Store

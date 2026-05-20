@@ -1,0 +1,48 @@
+name: arb-alerts
+
+# Runs the monthly-arb scanner every ~5 min on GitHub's runners and texts
+# you (via your Apps Script SMS webhook) when a NEW arb opportunity appears.
+# State (which arbs were already-alerted) lives in alerts_state.json and is
+# committed back by the workflow itself so cron runs remember each other.
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"        # 5-min cadence (GH min; expect ~5-15m lag)
+  workflow_dispatch: {}          # manual "Run workflow" button in the UI
+
+permissions:
+  contents: write                # needed to commit alerts_state.json back
+
+concurrency:
+  group: arb-alerts
+  cancel-in-progress: false      # let an in-flight run finish before the next
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run alert poller
+        env:
+          SMS_WEBHOOK: ${{ secrets.SMS_WEBHOOK }}
+          SMS_PHONE:   ${{ secrets.SMS_PHONE }}
+          SMS_CARRIER: ${{ secrets.SMS_CARRIER }}
+        run: python3 scripts/gha_alerts.py
+
+      - name: Persist state if changed
+        run: |
+          if [ -z "$(git status --porcelain alerts_state.json)" ]; then
+            echo "no state change"
+            exit 0
+          fi
+          git config user.email "actions@users.noreply.github.com"
+          git config user.name  "arb-alerts"
+          git add alerts_state.json
+          git commit -m "alerts: update state [skip ci]"
+          git push
