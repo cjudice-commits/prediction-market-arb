@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arb Scanner · Kalshi × Polymarket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="aurora"></div>
+
+<header>
+  <div class="brand">
+    <div class="logo">◆</div>
+    <div>
+      <h1>Arb&nbsp;Scanner</h1>
+      <span class="sub">Kalshi&nbsp;×&nbsp;Polymarket · crypto · <em>snapshot</em></span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button data-m="monthly" class="on">Monthly&nbsp;arb</button>
+      <button data-m="hourly">Hourly&nbsp;<span class="spec">spec</span></button>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="live"><span class="dot"></span><span id="meta">loading…</span></div>
+    <button id="refresh" class="primary"><span class="bspin"></span><span class="blabel">Reload</span></button>
+  </div>
+</header>
+
+<div id="hbanner" class="hbanner" hidden>
+  <div class="hb-ico">⚠</div>
+  <div class="hb-txt">
+    <b>Speculative — not a locked arb.</b> Kalshi settles on CF&nbsp;Benchmarks,
+    Polymarket on Binance. Different feeds &amp; the discrete-strike gap mean
+    legs can both lose. Live Binance↔CF divergence:
+    <span id="hbDiv" class="hb-div">—</span>
+  </div>
+</div>
+
+<section id="summary" class="summary"></section>
+
+<section id="hero" class="hero" hidden>
+  <div class="hero-head"><h2>Top opportunities</h2><span class="muted">positive guaranteed return, ranked</span></div>
+  <div id="heroCards" class="hero-cards"></div>
+</section>
+
+<section class="toolbar">
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="15" height="15"><path d="M21 21l-4.3-4.3M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input type="search" id="search" placeholder="Search asset, ticker, market…">
+  </div>
+  <div id="assetChips" class="chips"></div>
+  <div class="seg" id="statusSeg">
+    <button data-s="" class="on">All</button>
+    <button data-s="ARB">Arb</button>
+    <button data-s="NO ARB">No&nbsp;arb</button>
+    <button data-s="BAD BASIS">Bad&nbsp;basis</button>
+    <button data-s="LOW SIZE">Low&nbsp;size</button>
+  </div>
+  <label class="chk"><input type="checkbox" id="favOnly"><span>Favorable&nbsp;basis</span></label>
+  <span class="count" id="rowCount"></span>
+</section>
+
+<main>
+  <table id="grid">
+    <thead><tr id="head"></tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+  <div id="empty" class="empty" hidden>
+    <div class="empty-art">◇</div>
+    <p>No markets match the current filters.</p>
+  </div>
+</main>
+
+<div id="toast" class="toast" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>

@@ -75,18 +75,39 @@ def pair_id(r):
                       r.get("poly_slug") or "")
 
 
+DOCS_DATA = ROOT / "docs" / "data"
+
+
+def write_snapshot(name, payload):
+    DOCS_DATA.mkdir(parents=True, exist_ok=True)
+    path = DOCS_DATA / (name + ".json")
+    path.write_text(json.dumps(payload, separators=(",", ":")) + "\n")
+    print("snapshot: docs/data/%s.json (%d rows)" %
+          (name, len(payload.get("rows", []) or [])))
+
+
 def main():
+    # 1) Monthly scan -> snapshot + alert source.
+    payload = scan.run_scan(force=True)
+    write_snapshot("scan", payload)
+
+    # 2) Hourly snapshot for the public dashboard. Failure here doesn't
+    # block the monthly alert path.
+    try:
+        write_snapshot("hourly", scan.run_hourly(force=True))
+    except Exception as e:
+        print("hourly snapshot failed: %s: %s" % (type(e).__name__, e))
+
+    # 3) Monthly alerts (SMS). No-op if SMS env vars aren't configured.
     webhook = os.environ.get("SMS_WEBHOOK", "").strip()
     phone = os.environ.get("SMS_PHONE", "").strip()
     carrier = os.environ.get("SMS_CARRIER", "").strip()
     if not (webhook and phone and carrier):
-        print("SMS env vars missing — exiting (set SMS_WEBHOOK/SMS_PHONE/SMS_CARRIER)")
+        print("SMS env vars missing — snapshots written, no texts sent")
         return
 
-    payload = scan.run_scan(force=True)
     settings = payload.get("settings", {})
     min_ret = settings.get("min_net_return", 0)
-
     current = {pair_id(r): r for r in payload.get("rows", [])
                if r.get("status") == "ARB"
                and (r.get("net_return") or 0) >= min_ret}

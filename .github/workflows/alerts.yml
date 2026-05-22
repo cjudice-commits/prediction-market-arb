@@ -35,14 +35,14 @@ jobs:
           SMS_CARRIER: ${{ secrets.SMS_CARRIER }}
         run: python3 scripts/gha_alerts.py
 
-      - name: Persist state if changed
+      - name: Commit state + dashboard snapshots if changed
         run: |
-          if [ -z "$(git status --porcelain alerts_state.json)" ]; then
-            echo "no state change"
+          git add alerts_state.json docs/data/ 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "no changes to commit"
             exit 0
           fi
           git config user.email "actions@users.noreply.github.com"
           git config user.name  "arb-alerts"
-          git add alerts_state.json
-          git commit -m "alerts: update state [skip ci]"
+          git commit -m "alerts+dashboard: refresh [skip ci]"
           git push
