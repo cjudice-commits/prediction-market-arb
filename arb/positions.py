@@ -175,25 +175,33 @@ def _poly_history(wallet, open_cids):
 
     res = parallel(_clob_resolution, list(mk), workers=12)
     rows = []
+    import datetime
     for cid, g in mk.items():
         r = res.get(cid)
-        if isinstance(r, FetchError) or not r or not r[0]:
-            continue                                  # unresolved -> not history
-        winner = r[1]
+        closed = bool(r and not isinstance(r, FetchError) and r[0])
+        winner = (r[1] if closed else None)        # CLOB outcome that won
         held = max(0.0, g["net"].get(winner, 0.0)) if winner else 0.0
-        payout = held                                 # winning shares pay $1
+        payout = held                              # winning shares pay $1
         trade_cash = g["sell"] - g["buy"]
         realized = trade_cash + payout
-        side = max(g["net"].items(), key=lambda kv: abs(kv[1]))[0] \
-            if g["net"] else None
-        import datetime
+        # Side = the outcome you carried net into resolution / out the door.
+        # When fully sold (all nets ~0), there's no meaningful side.
+        nz = {k: v for k, v in (g["net"] or {}).items() if abs(v) > 1e-9}
+        side = (max(nz.items(), key=lambda kv: abs(kv[1]))[0]
+                if nz else None)
         sd = (datetime.datetime.utcfromtimestamp(g["ts"]).date().isoformat()
               if g.get("ts") else None)
+        # Result label: winning outcome if resolved; "SOLD" if user exited
+        # before resolution. Both are legitimate "history" rows.
+        if closed:
+            result = (winner.upper() if winner else "VOID")
+        else:
+            result = "SOLD"
         rows.append({
             "venue": "Polymarket",
             "market": g["title"],
             "ref": g["slug"],
-            "result": (winner or "—"),
+            "result": result,
             "side": side,
             "size": abs(g["net"].get(side, 0.0)) if side else 0.0,
             "cost": g["buy"],
@@ -366,6 +374,44 @@ def _kalshi(key_id, key_path):
         cursor = sd.get("cursor") or ""
         if not cursor:
             break
+
+    # Sold-out / round-tripped markets: Kalshi's `/settlements` only lists
+    # markets the user held to expiry. Anything they bought and then sold
+    # before expiry is captured only on the *positions* endpoint with
+    # count_filter=total_traded (and position_fp==0). realized_pnl_dollars
+    # there is Kalshi's exact booked P&L for the round-trip.
+    settled_tickers = {s["ref"] for s in settled}
+    try:
+        sd2 = signed_get(KALSHI_POS_PATH +
+                         "?limit=500&count_filter=total_traded")
+        for m in sd2.get("market_positions", []):
+            tk = m.get("ticker")
+            if not tk or tk in settled_tickers:
+                continue                      # already in settlements
+            try:
+                pos_fp = float(m.get("position_fp") or 0)
+            except (TypeError, ValueError):
+                pos_fp = 0.0
+            if abs(pos_fp) > 1e-9:
+                continue                      # currently held; in `out`
+            if float(m.get("total_traded_dollars") or 0) <= 0:
+                continue
+            settled.append({
+                "venue": "Kalshi",
+                "market": tk,
+                "ref": tk,
+                "result": "SOLD",
+                "side": None,
+                "size": None,
+                "cost": None,
+                "payout": None,
+                "realized": num(m, "realized_pnl"),
+                "settled_date": (m.get("last_updated_ts") or "")[:10] or None,
+                "asset": _asset_from_ticker(tk),
+                "derived": False,
+            })
+    except Exception:
+        pass                                  # don't break settlements
 
     return {"configured": True, "positions": out,
             "total_value": total_value, "settlements": settled}
