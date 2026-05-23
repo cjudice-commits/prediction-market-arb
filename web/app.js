@@ -34,10 +34,25 @@ const COLS_HOURLY = [
   { k: "poly_volume",   t: "P Vol",      f: "money" },
   { k: "status",        t: "Status",     align: "l", f: "status" },
 ];
+const COLS_DAILY = [
+  { k: "_mkt",          t: "Market",     align: "l", sort: "ibkr_label" },
+  { k: "ibkr_strike",   t: "IBKR Strike",f: "strike" },
+  { k: "kalshi_strike", t: "K Strike",   f: "strike" },
+  { k: "basis_pct",     t: "Basis",      f: "pct" },
+  { k: "best_side",     t: "Side",       align: "l" },
+  { k: "_px",           t: "K / I px",   align: "l", sort: "combined_cost" },
+  { k: "combined_cost", t: "Comb $",     f: "px" },
+  { k: "worst_pnl",     t: "Min $/ct",   f: "s4" },
+  { k: "net_return",    t: "Net Ret",    f: "pctBig" },
+  { k: "_settle",       t: "Settle",     align: "l" },
+  { k: "status",        t: "Status",     align: "l", f: "status" },
+];
 
 let MODE = "monthly", POS_VIEW = "venue";
-const COLS = () => (MODE === "hourly" ? COLS_HOURLY : COLS_MONTHLY);
+const COLS = () => MODE === "daily" ? COLS_DAILY
+  : MODE === "hourly" ? COLS_HOURLY : COLS_MONTHLY;
 const endpoint = () => MODE === "positions" ? "/api/positions"
+  : MODE === "daily" ? "/api/scan/daily"
   : MODE === "hourly" ? "/api/scan/hourly" : "/api/scan";
 
 let RAW = [], sortKey = "net_return", sortAsc = false, openKey = null;
@@ -84,17 +99,29 @@ function thumb(r, sz) {
 }
 
 function cellMarket(r) {
-  const title = r.kalshi_title || r.poly_question ||
+  const title = r.ibkr_label || r.kalshi_title || r.poly_question ||
     `${r.asset} ${r.direction} ${r.kalshi_strike ?? ""}`;
-  const strikes = `K $${r.kalshi_strike ?? "—"} · P $${r.poly_strike ?? "—"}`;
+  const secondLabel = (MODE === "daily")
+    ? `K $${r.kalshi_strike ?? "—"} · I $${r.ibkr_strike ?? "—"}`
+    : `K $${r.kalshi_strike ?? "—"} · P $${r.poly_strike ?? "—"}`;
   return `<div class="mkt">${thumb(r)}
     <div class="info">
       <div class="qa">
         <span class="achip" style="background:${ac(r.asset)}22;color:${ac(r.asset)}">${esc(r.asset || "?")}</span>
         <span class="q" title="${esc(title)}">${esc(title)}</span>
       </div>
-      <div class="sub"><span class="dir">${esc(r.direction || "")}</span> &nbsp;${esc(strikes)}</div>
+      <div class="sub"><span class="dir">${esc(r.direction || "")}</span> &nbsp;${esc(secondLabel)}</div>
     </div></div>`;
+}
+
+function cellSettle(r) {
+  const iso = r.kalshi_close_iso || r.ibkr_close_iso;
+  if (!iso) return '<span class="dimv">—</span>';
+  try {
+    const d = new Date(iso);
+    const opts = { month: "short", day: "numeric", hour: "numeric" };
+    return `<span class="mono">${d.toLocaleString(undefined, opts)}</span>`;
+  } catch (e) { return esc(iso); }
 }
 
 function cellPx(r) {
@@ -102,8 +129,9 @@ function cellPx(r) {
   if (k == null || p == null) return '<span class="dimv">—</span>';
   const pct = Math.min(100, (c / 1) * 100);
   const col = c < 1 ? "var(--good)" : "var(--bad)";
+  const otherL = MODE === "daily" ? "I" : "P";
   return `<div class="pricebar">
-    <div class="lbl"><span>K ${k.toFixed(3)}</span><span>P ${p.toFixed(3)}</span></div>
+    <div class="lbl"><span>K ${k.toFixed(3)}</span><span>${otherL} ${p.toFixed(3)}</span></div>
     <div class="track"><div class="fill" style="width:${pct}%;background:${col}"></div></div>
     <div class="lbl"><span class="dimv">cost vs $1</span><span class="${c < 1 ? "pos" : "neg"}">${c.toFixed(3)}</span></div>
   </div>`;
@@ -243,10 +271,13 @@ function renderBody() {
         if (c.k === "_mkt") return `<td class="${cls}">${cellMarket(r)}</td>`;
         if (c.k === "_px") return `<td class="${cls}">${cellPx(r)}</td>`;
         if (c.k === "_window") return `<td class="${cls}">${cellWindow(r)}</td>`;
+        if (c.k === "_settle") return `<td class="${cls}">${cellSettle(r)}</td>`;
         if (c.k === "best_side") {
           let bs = r.best_side || "—";
           if (MODE === "hourly" && bs !== "—")
             bs = bs === "YES+NO" ? "K-Yes · P-Down" : "K-No · P-Up";
+          else if (MODE === "daily" && bs !== "—")
+            bs = bs === "YES+NO" ? "K-Yes · I-No" : "K-No · I-Yes";
           return `<td class="${cls}"><span class="mono">${esc(bs)}</span></td>`;
         }
         return `<td class="${cls}">${fmt(r[c.k], c.f)}</td>`;
@@ -267,6 +298,10 @@ function renderSummary(s) {
     ["ARB", "Edges", "s-arb"], ["NO ARB", "No edge", ""],
     ["BAD BASIS", "Bad basis", "s-bad"], ["NO DATA", "No data", ""],
     ["total", "Assets", ""],
+  ] : MODE === "daily" ? [
+    ["ARB", "Live arbs", "s-arb"], ["NO ARB", "No edge", ""],
+    ["BAD BASIS", "Bad basis", "s-bad"], ["NO KALSHI", "No K match", ""],
+    ["total", "Contracts", ""],
   ] : [
     ["ARB", "Live arbs", "s-arb"], ["NO ARB", "No edge", ""],
     ["BAD BASIS", "Bad basis", "s-bad"], ["LOW SIZE", "Low size", "s-warn"],
@@ -516,6 +551,31 @@ function applyChrome() {
   document.querySelector("main").hidden = !scanner;
   $("positions").hidden = scanner;
   if (!scanner) { $("hero").hidden = true; $("hbanner").hidden = true; }
+  if (MODE !== "daily") $("ibkrSetup").hidden = true;
+}
+
+function showIbkrSetup(payload) {
+  const reason = payload.reason || "";
+  const gw = payload.gateway || {};
+  const titleEl = $("ibkrSetupTitle");
+  const msgEl = $("ibkrSetupMsg");
+  if (reason === "no_contracts_file") {
+    titleEl.textContent = "No IBKR contracts configured.";
+    msgEl.innerHTML = ` Copy <code>data/ibkr_contracts.example.json</code> → <code>data/ibkr_contracts.json</code> and fill in your daily-BTC conids. `;
+  } else if (reason === "gateway_not_running") {
+    titleEl.textContent = "IBKR Gateway not running.";
+    msgEl.innerHTML = ` Start the Client Portal Gateway on this Mac (default port 5000). Detail: <code>${esc(gw.message || "no connection")}</code>. `;
+  } else if (payload.error) {
+    titleEl.textContent = "IBKR session needs re-auth.";
+    msgEl.innerHTML = ` ${esc(payload.error)} `;
+  } else if (reason && reason.startsWith("bad_json")) {
+    titleEl.textContent = "data/ibkr_contracts.json is invalid JSON.";
+    msgEl.innerHTML = ` <code>${esc(reason)}</code> `;
+  } else {
+    titleEl.textContent = "IBKR not connected.";
+    msgEl.textContent = "";
+  }
+  $("ibkrSetup").hidden = false;
 }
 
 async function load(force) {
@@ -532,15 +592,31 @@ async function load(force) {
       renderPositions(d);
       $("meta").textContent =
         `${d.generated_at} · ${d.totals.open_positions} open`;
+    } else if (MODE === "daily" && d.configured === false) {
+      RAW = [];
+      renderSummary({ total: 0 });
+      buildAssetChips();
+      renderHero(RAW);
+      renderBody();
+      showIbkrSetup(d);
+      $("meta").textContent = "IBKR not connected";
     } else {
-      RAW = d.rows;
-      renderSummary(d.summary);
+      RAW = d.rows || [];
+      renderSummary(d.summary || { total: RAW.length });
       buildAssetChips();
       renderHero(RAW);
       renderBody();
       updateBanner(d.summary);
-      const unit = MODE === "hourly" ? "assets" : "pairs";
-      $("meta").textContent = `${d.generated_at} · ${d.summary.total} ${unit}`;
+      if (MODE === "daily") {
+        $("ibkrSetup").hidden = false;
+        $("ibkrSetupTitle").textContent = "IBKR connected.";
+        $("ibkrSetupMsg").innerHTML =
+          ' Local-only feature; updates as long as the Client Portal Gateway is running and authenticated. ';
+      }
+      const unit = MODE === "hourly" ? "assets"
+        : MODE === "daily" ? "pairs" : "pairs";
+      const ga = d.generated_at || "—";
+      $("meta").textContent = `${ga} · ${RAW.length} ${unit}`;
     }
   } catch (e) {
     toast((MODE === "positions" ? "Load" : "Scan") + " failed: " + e.message, "err");

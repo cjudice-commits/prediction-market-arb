@@ -55,9 +55,10 @@ class Handler(BaseHTTPRequestHandler):
         u = urlparse(self.path)
         if u.path in _STATIC:
             return self._static(u.path)
-        if u.path in ("/api/scan", "/api/scan/hourly"):
+        if u.path in ("/api/scan", "/api/scan/hourly", "/api/scan/daily"):
             force = parse_qs(u.query).get("force", ["0"])[0] == "1"
-            runner = (scan.run_hourly if u.path.endswith("hourly")
+            runner = (scan.run_daily if u.path.endswith("daily")
+                      else scan.run_hourly if u.path.endswith("hourly")
                       else scan.run_scan)
             try:
                 return self._send(200, runner(force=force))

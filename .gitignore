@@ -1,6 +1,9 @@
 # Secrets — never commit. Provide your own data/secrets.json locally.
 data/secrets.json
 
+# IBKR contract watchlist (user-editable; conids/dates change frequently)
+data/ibkr_contracts.json
+
 # Python
 __pycache__/
 *.pyc

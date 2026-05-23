@@ -1,0 +1,19 @@
+{
+  "_comment": "Copy to data/ibkr_contracts.json and fill in your own IBKR ForecastEx daily-BTC conids. data/ibkr_contracts.json is git-ignored. Find conids via the IBKR Client Portal Gateway once it's auth'd (search 'BTC' under ForecastEx / event contracts) or copy them from the IBKR Web UI. `close_iso` MUST be the UTC ISO timestamp the IBKR contract settles at (e.g. 5pm ET = 21:00 UTC during EDT). `strike` is the dollar level the contract is 'or above'. Add one entry per IBKR contract you want to watch; the scanner pairs each to the Kalshi KXBTCD market closing at the same instant with nearest strike.",
+  "contracts": [
+    {
+      "asset": "BTC",
+      "conid": 12345678,
+      "strike": 85000,
+      "close_iso": "2026-05-23T21:00:00Z",
+      "label": "BTC > $85,000 @ 5pm ET, 5/23"
+    },
+    {
+      "asset": "BTC",
+      "conid": 12345679,
+      "strike": 86000,
+      "close_iso": "2026-05-23T21:00:00Z",
+      "label": "BTC > $86,000 @ 5pm ET, 5/23"
+    }
+  ]
+}

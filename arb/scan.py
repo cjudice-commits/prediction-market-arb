@@ -16,6 +16,9 @@ _HLOCK = threading.Lock()
 _PCACHE = {"ts": 0.0, "payload": None}
 _PLOCK = threading.Lock()
 _POS_TTL = 12
+_DCACHE = {"ts": 0.0, "payload": None}
+_DLOCK = threading.Lock()
+_DAILY_TTL = 6
 _CACHE_TTL = 4  # seconds; just enough to dedupe rapid refreshes
 
 
@@ -145,4 +148,18 @@ def run_positions(force=False):
         payload = positions.run_positions()
         _PCACHE["ts"] = now
         _PCACHE["payload"] = payload
+        return payload
+
+
+def run_daily(force=False):
+    """IBKR × Kalshi daily-BTC cross-reference. Cached for _DAILY_TTL."""
+    from . import daily
+    with _DLOCK:
+        now = time.time()
+        if (not force) and _DCACHE["payload"] and \
+                (now - _DCACHE["ts"] < _DAILY_TTL):
+            return _DCACHE["payload"]
+        payload = daily.run(load_settings())
+        _DCACHE["ts"] = now
+        _DCACHE["payload"] = payload
         return payload

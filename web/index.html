@@ -22,6 +22,7 @@
     <div class="tabs" id="tabs">
       <button data-m="monthly" class="on">Monthly&nbsp;arb</button>
       <button data-m="hourly">Hourly&nbsp;<span class="spec">spec</span></button>
+      <button data-m="daily">IBKR&nbsp;×&nbsp;Kalshi</button>
       <button data-m="positions">Positions</button>
     </div>
   </div>
@@ -79,6 +80,15 @@
 </main>
 
 <section id="positions" class="positions" hidden></section>
+
+<div id="ibkrSetup" class="hbanner" hidden>
+  <div class="hb-ico">⚙︎</div>
+  <div class="hb-txt">
+    <b id="ibkrSetupTitle">IBKR not connected.</b>
+    <span id="ibkrSetupMsg"></span>
+    <span class="muted">Local-only feature — needs the IBKR Client Portal Gateway running on this Mac and a populated <code>data/ibkr_contracts.json</code>.</span>
+  </div>
+</div>
 
 <div id="settingsModal" class="modal" hidden>
   <div class="card">
