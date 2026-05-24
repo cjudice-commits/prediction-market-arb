@@ -113,8 +113,26 @@ def _loop():
         time.sleep(POLL_INTERVAL)
 
 
+def _ibkr_keepalive():
+    """Tickles the IBKR Client Portal Gateway every minute so its short
+    inactivity timeout (~5min) doesn't drop the session out from under us.
+    Silent no-op when the Gateway isn't running / not authed."""
+    time.sleep(START_DELAY)
+    while True:
+        try:
+            from . import ibkr
+            if ibkr.auth_status().get("authenticated"):
+                ibkr.tickle()
+        except Exception:
+            pass
+        time.sleep(60)
+
+
 def start_poller():
-    """Spawn the daemon thread. Safe to call once at server startup."""
-    t = threading.Thread(target=_loop, daemon=True, name="arb-sms-poller")
-    t.start()
-    _log("poller started (interval=%ds)" % POLL_INTERVAL)
+    """Spawn the daemon thread(s). Safe to call once at server startup."""
+    threading.Thread(target=_loop, daemon=True,
+                     name="arb-sms-poller").start()
+    threading.Thread(target=_ibkr_keepalive, daemon=True,
+                     name="ibkr-keepalive").start()
+    _log("poller started (interval=%ds); ibkr keepalive enabled" %
+         POLL_INTERVAL)
