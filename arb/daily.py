@@ -112,20 +112,27 @@ def _kq_from_market(m):
     }
 
 
-def _pq_from_ibkr(snap, label):
-    """Adapt an IBKR snapshot to the pq shape calc.evaluate expects.
-    yes_ask = ask (long YES); no_ask = 1 - bid (short YES ~= long NO)."""
-    bid = snap.get("bid"); ask = snap.get("ask")
-    yes_ask = ask if (ask and 0 < ask <= 1) else None
-    no_ask = (1.0 - bid) if (bid and 0 < bid < 1) else None
+def _pq_from_ibkr(yes_snap, no_snap, label):
+    """Adapt an IBKR YES+NO snapshot pair to the pq shape calc.evaluate expects.
+    IBKR ForecastEx uses TWO conids per strike — one for YES (right=CALL,
+    'or above'), one for NO (right=PUT). yes_ask is the YES contract's ask,
+    no_ask is the NO contract's ask — clean, no derivation needed."""
+    def f(v):
+        try:
+            x = float(v)
+            return x if (x and 0 < x <= 1) else None
+        except (TypeError, ValueError):
+            return None
+    ya = f((yes_snap or {}).get("ask"))
+    na = f((no_snap or {}).get("ask"))
     return {
         "slug": None,
         "question": label,
         "description": None,
         "image": None, "icon": None,
-        "yes_ask": yes_ask, "no_ask": no_ask,
-        "yes_ask_size": snap.get("ask_size"),
-        "no_ask_size": snap.get("bid_size"),
+        "yes_ask": ya, "no_ask": na,
+        "yes_ask_size": (yes_snap or {}).get("ask_size"),
+        "no_ask_size": (no_snap or {}).get("ask_size"),
         "volume": None,
         "end_date": None,
         "closed": False,
@@ -161,22 +168,29 @@ def run(settings):
                 "rows": [], "gateway": auth}
     ibkr.tickle()                                # extend session
 
-    conids = [c.get("conid") for c in cfg["contracts"] if c.get("conid")]
-    # IB market data subscription warms up on first call; retry once.
-    snaps = ibkr.snapshot(conids)
-    if any(s.get("ask") is None and s.get("bid") is None for s in snaps.values()):
-        time.sleep(1.0)
-        snaps = ibkr.snapshot(conids) or snaps
+    # Collect every conid we need (YES + NO per strike) for one batched snapshot
+    all_cids = []
+    for c in cfg["contracts"]:
+        for k in ("yes_conid", "no_conid"):
+            v = c.get(k)
+            if v: all_cids.append(v)
+    # IB's snapshot subscription warms up over a few seconds; retry once.
+    snaps = ibkr.snapshot(all_cids) if all_cids else {}
+    if any(s.get("ask") is None for s in snaps.values()):
+        time.sleep(2.0)
+        snaps = ibkr.snapshot(all_cids) or snaps
 
     rows = []
     for entry in cfg["contracts"]:
-        cid = str(entry.get("conid") or "")
+        yes_cid = str(entry.get("yes_conid") or "")
+        no_cid = str(entry.get("no_conid") or "")
         strike = entry.get("strike")
         close_iso = entry.get("close_iso")
-        label = entry.get("label") or ("IBKR conid %s" % cid)
-        if not (cid and strike and close_iso):
+        label = entry.get("label") or ("IBKR %s" % yes_cid)
+        if not (yes_cid and no_cid and strike and close_iso):
             continue
-        snap = snaps.get(cid) or {}
+        ysnap = snaps.get(yes_cid) or {}
+        nsnap = snaps.get(no_cid) or {}
 
         event_ticker = _event_ticker_for(close_iso, series="KXBTCD")
         ladder = _kalshi_ladder(event_ticker) if event_ticker else []
@@ -184,10 +198,11 @@ def run(settings):
         if not pick:
             rows.append({
                 "asset": entry.get("asset", "BTC"),
-                "ibkr_conid": cid, "ibkr_label": label,
+                "ibkr_conid_yes": yes_cid, "ibkr_conid_no": no_cid,
+                "ibkr_label": label,
                 "ibkr_strike": strike, "ibkr_close_iso": close_iso,
                 "kalshi_event": event_ticker,
-                "ibkr_bid": snap.get("bid"), "ibkr_ask": snap.get("ask"),
+                "ibkr_yes_ask": ysnap.get("ask"), "ibkr_no_ask": nsnap.get("ask"),
                 "status": "NO KALSHI",
                 "note": "no matching Kalshi KXBTCD event/strike",
             })
@@ -195,22 +210,23 @@ def run(settings):
 
         dist, kstrike, kmkt = pick
         kq = _kq_from_market(kmkt)
-        pq = _pq_from_ibkr(snap, label)
+        pq = _pq_from_ibkr(ysnap, nsnap, label)
         pair = {
             "asset": entry.get("asset", "BTC"),
             "kalshi_ticker": kmkt.get("ticker"),
             "kalshi_strike": kstrike,
-            "poly_slug": cid,           # repurposed slot — pair id
+            "poly_slug": yes_cid,       # repurposed slot — pair id
             "poly_strike": float(strike),
             "active": True,
         }
         row = evaluate(pair, kq, pq, settings)
         # Rebadge poly→IBKR for UI consumption.
-        row["ibkr_conid"] = cid
+        row["ibkr_conid_yes"] = yes_cid
+        row["ibkr_conid_no"] = no_cid
         row["ibkr_label"] = label
         row["ibkr_strike"] = float(strike)
-        row["ibkr_ask"] = snap.get("ask")
-        row["ibkr_bid"] = snap.get("bid")
+        row["ibkr_yes_ask"] = ysnap.get("ask")
+        row["ibkr_no_ask"] = nsnap.get("ask")
         row["kalshi_close_iso"] = (kmkt.get("close_time") or close_iso)
         row["kalshi_event"] = event_ticker
         rows.append(row)

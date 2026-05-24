@@ -52,12 +52,13 @@ def _req(method, path, body=None, timeout=8):
     try:
         with urllib.request.urlopen(rq, timeout=timeout, context=_CTX) as r:
             return json.loads(r.read().decode() or "null")
+    except urllib.error.HTTPError as e:    # check HTTPError BEFORE URLError —
+        if e.code in (401, 403):           # HTTPError is a subclass of URLError
+            raise NotAuthed("HTTP %s — sign in at https://localhost:5000"
+                            % e.code)
+        raise
     except (ConnectionRefusedError, urllib.error.URLError) as e:
         raise NotConnected(str(e))
-    except urllib.error.HTTPError as e:
-        if e.code in (401, 403):
-            raise NotAuthed("HTTP %s — re-auth via Gateway browser SSO" % e.code)
-        raise
 
 
 def auth_status():
