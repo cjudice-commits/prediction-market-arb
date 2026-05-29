@@ -34,9 +34,23 @@ const COLS_HOURLY = [
   { k: "poly_volume",   t: "P Vol",      f: "money" },
   { k: "status",        t: "Status",     align: "l", f: "status" },
 ];
+const COLS_DAILY = [
+  { k: "_mkt",          t: "Market",     align: "l", sort: "ibkr_label" },
+  { k: "ibkr_strike",   t: "IBKR Strike",f: "strike" },
+  { k: "kalshi_strike", t: "K Strike",   f: "strike" },
+  { k: "basis_pct",     t: "Basis",      f: "pct" },
+  { k: "best_side",     t: "Side",       align: "l" },
+  { k: "_px",           t: "K / I px",   align: "l", sort: "combined_cost" },
+  { k: "combined_cost", t: "Comb $",     f: "px" },
+  { k: "worst_pnl",     t: "Min $/ct",   f: "s4" },
+  { k: "net_return",    t: "Net Ret",    f: "pctBig" },
+  { k: "_settle",       t: "Settle",     align: "l" },
+  { k: "status",        t: "Status",     align: "l", f: "status" },
+];
 
 let MODE = "monthly", POS_VIEW = "venue";
-const COLS = () => (MODE === "hourly" ? COLS_HOURLY : COLS_MONTHLY);
+const COLS = () => MODE === "daily" ? COLS_DAILY
+  : MODE === "hourly" ? COLS_HOURLY : COLS_MONTHLY;
 // Static snapshot URLs — no backend; cache-bust on each load so returning
 // users see fresh data after a GHA cron commit.
 const endpoint = () => {
@@ -51,19 +65,6 @@ const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g,
   (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const rid = (r) => (r.asset || "") + "|" + (r.kalshi_ticker || "") +
   "|" + (r.poly_slug || "");
-
-// "2026-05-21 16:15:07" (UTC, from GHA runner) -> "3 min ago" etc.
-function ago(stamp) {
-  if (!stamp) return "—";
-  const t = Date.parse(stamp.replace(" ", "T") + "Z");
-  if (isNaN(t)) return stamp;
-  const s = Math.max(0, Math.round((Date.now() - t) / 1000));
-  if (s < 45) return "just now";
-  const m = Math.round(s / 60);
-  if (m < 60) return `${m} min ago`;
-  const h = Math.round(m / 60);
-  return `${h}h ago`;
-}
 
 function fmt(v, kind) {
   if (v === null || v === undefined || v === "")
@@ -102,17 +103,29 @@ function thumb(r, sz) {
 }
 
 function cellMarket(r) {
-  const title = r.kalshi_title || r.poly_question ||
+  const title = r.ibkr_label || r.kalshi_title || r.poly_question ||
     `${r.asset} ${r.direction} ${r.kalshi_strike ?? ""}`;
-  const strikes = `K $${r.kalshi_strike ?? "—"} · P $${r.poly_strike ?? "—"}`;
+  const secondLabel = (MODE === "daily")
+    ? `K $${r.kalshi_strike ?? "—"} · I $${r.ibkr_strike ?? "—"}`
+    : `K $${r.kalshi_strike ?? "—"} · P $${r.poly_strike ?? "—"}`;
   return `<div class="mkt">${thumb(r)}
     <div class="info">
       <div class="qa">
         <span class="achip" style="background:${ac(r.asset)}22;color:${ac(r.asset)}">${esc(r.asset || "?")}</span>
         <span class="q" title="${esc(title)}">${esc(title)}</span>
       </div>
-      <div class="sub"><span class="dir">${esc(r.direction || "")}</span> &nbsp;${esc(strikes)}</div>
+      <div class="sub"><span class="dir">${esc(r.direction || "")}</span> &nbsp;${esc(secondLabel)}</div>
     </div></div>`;
+}
+
+function cellSettle(r) {
+  const iso = r.kalshi_close_iso || r.ibkr_close_iso;
+  if (!iso) return '<span class="dimv">—</span>';
+  try {
+    const d = new Date(iso);
+    const opts = { month: "short", day: "numeric", hour: "numeric" };
+    return `<span class="mono">${d.toLocaleString(undefined, opts)}</span>`;
+  } catch (e) { return esc(iso); }
 }
 
 function cellPx(r) {
@@ -120,8 +133,9 @@ function cellPx(r) {
   if (k == null || p == null) return '<span class="dimv">—</span>';
   const pct = Math.min(100, (c / 1) * 100);
   const col = c < 1 ? "var(--good)" : "var(--bad)";
+  const otherL = MODE === "daily" ? "I" : "P";
   return `<div class="pricebar">
-    <div class="lbl"><span>K ${k.toFixed(3)}</span><span>P ${p.toFixed(3)}</span></div>
+    <div class="lbl"><span>K ${k.toFixed(3)}</span><span>${otherL} ${p.toFixed(3)}</span></div>
     <div class="track"><div class="fill" style="width:${pct}%;background:${col}"></div></div>
     <div class="lbl"><span class="dimv">cost vs $1</span><span class="${c < 1 ? "pos" : "neg"}">${c.toFixed(3)}</span></div>
   </div>`;
@@ -261,10 +275,13 @@ function renderBody() {
         if (c.k === "_mkt") return `<td class="${cls}">${cellMarket(r)}</td>`;
         if (c.k === "_px") return `<td class="${cls}">${cellPx(r)}</td>`;
         if (c.k === "_window") return `<td class="${cls}">${cellWindow(r)}</td>`;
+        if (c.k === "_settle") return `<td class="${cls}">${cellSettle(r)}</td>`;
         if (c.k === "best_side") {
           let bs = r.best_side || "—";
           if (MODE === "hourly" && bs !== "—")
             bs = bs === "YES+NO" ? "K-Yes · P-Down" : "K-No · P-Up";
+          else if (MODE === "daily" && bs !== "—")
+            bs = bs === "YES+NO" ? "K-Yes · I-No" : "K-No · I-Yes";
           return `<td class="${cls}"><span class="mono">${esc(bs)}</span></td>`;
         }
         return `<td class="${cls}">${fmt(r[c.k], c.f)}</td>`;
@@ -285,10 +302,14 @@ function renderSummary(s) {
     ["ARB", "Edges", "s-arb"], ["NO ARB", "No edge", ""],
     ["BAD BASIS", "Bad basis", "s-bad"], ["NO DATA", "No data", ""],
     ["total", "Assets", ""],
+  ] : MODE === "daily" ? [
+    ["ARB", "Live arbs", "s-arb"], ["NO ARB", "No edge", ""],
+    ["BAD BASIS", "Bad basis", "s-bad"], ["NO KALSHI", "No K match", ""],
+    ["total", "Contracts", ""],
   ] : [
     ["ARB", "Live arbs", "s-arb"], ["NO ARB", "No edge", ""],
     ["BAD BASIS", "Bad basis", "s-bad"], ["LOW SIZE", "Low size", "s-warn"],
-    ["NO DATA", "No data", ""], ["total", "Scanned", ""],
+    ["NO POLY", "No Poly", ""], ["total", "Scanned", ""],
   ];
   $("summary").innerHTML = cards.map(([k, l, cls]) =>
     `<div class="stat ${cls}"><div class="n">${s[k] ?? 0}</div>
@@ -532,8 +553,33 @@ function applyChrome() {
   $("summary").hidden = !scanner;
   document.querySelector(".toolbar").hidden = !scanner;
   document.querySelector("main").hidden = !scanner;
-  if ($("positions")) $("positions").hidden = scanner;
+  $("positions").hidden = scanner;
   if (!scanner) { $("hero").hidden = true; $("hbanner").hidden = true; }
+  if (MODE !== "daily") $("ibkrSetup").hidden = true;
+}
+
+function showIbkrSetup(payload) {
+  const reason = payload.reason || "";
+  const gw = payload.gateway || {};
+  const titleEl = $("ibkrSetupTitle");
+  const msgEl = $("ibkrSetupMsg");
+  if (reason === "no_contracts_file") {
+    titleEl.textContent = "No IBKR contracts configured.";
+    msgEl.innerHTML = ` Copy <code>data/ibkr_contracts.example.json</code> → <code>data/ibkr_contracts.json</code> and fill in your daily-BTC conids. `;
+  } else if (reason === "gateway_not_running") {
+    titleEl.textContent = "IBKR Gateway not running.";
+    msgEl.innerHTML = ` Start the Client Portal Gateway on this Mac (default port 5000). Detail: <code>${esc(gw.message || "no connection")}</code>. `;
+  } else if (payload.error) {
+    titleEl.textContent = "IBKR session needs re-auth.";
+    msgEl.innerHTML = ` ${esc(payload.error)} `;
+  } else if (reason && reason.startsWith("bad_json")) {
+    titleEl.textContent = "data/ibkr_contracts.json is invalid JSON.";
+    msgEl.innerHTML = ` <code>${esc(reason)}</code> `;
+  } else {
+    titleEl.textContent = "IBKR not connected.";
+    msgEl.textContent = "";
+  }
+  $("ibkrSetup").hidden = false;
 }
 
 async function load(force) {
@@ -550,15 +596,31 @@ async function load(force) {
       renderPositions(d);
       $("meta").textContent =
         `${d.generated_at} · ${d.totals.open_positions} open`;
+    } else if (MODE === "daily" && d.configured === false) {
+      RAW = [];
+      renderSummary({ total: 0 });
+      buildAssetChips();
+      renderHero(RAW);
+      renderBody();
+      showIbkrSetup(d);
+      $("meta").textContent = "IBKR not connected";
     } else {
-      RAW = d.rows;
-      renderSummary(d.summary);
+      RAW = d.rows || [];
+      renderSummary(d.summary || { total: RAW.length });
       buildAssetChips();
       renderHero(RAW);
       renderBody();
       updateBanner(d.summary);
-      const unit = MODE === "hourly" ? "assets" : "pairs";
-      $("meta").textContent = `${ago(d.generated_at)} · ${d.summary.total} ${unit}`;
+      if (MODE === "daily") {
+        $("ibkrSetup").hidden = false;
+        $("ibkrSetupTitle").textContent = "IBKR connected.";
+        $("ibkrSetupMsg").innerHTML =
+          ' Local-only feature; updates as long as the Client Portal Gateway is running and authenticated. ';
+      }
+      const unit = MODE === "hourly" ? "assets"
+        : MODE === "daily" ? "pairs" : "pairs";
+      const ga = d.generated_at || "—";
+      $("meta").textContent = `${ga} · ${RAW.length} ${unit}`;
     }
   } catch (e) {
     toast((MODE === "positions" ? "Load" : "Scan") + " failed: " + e.message, "err");
@@ -622,33 +684,28 @@ function wire() {
     document.querySelector("#statusSeg button.on")?.classList.remove("on");
     b.classList.add("on"); renderBody();
   });
-  // STATIC_MODE: no auto-refresh checkbox, no settings panel (DOM absent).
-  if ($("auto")) {
-    let timer = null;
-    $("auto").onchange = (e) => {
-      clearInterval(timer);
-      if (e.target.checked) { load(true); timer = setInterval(() => load(true), 8000); }
+  let timer = null;
+  $("auto").onchange = (e) => {
+    clearInterval(timer);
+    if (e.target.checked) { load(true); timer = setInterval(() => load(true), 8000); }
+  };
+  $("settingsBtn").onclick = async () => {
+    await loadSettings(); $("settingsModal").hidden = false;
+  };
+  $("closeSettings").onclick = () => ($("settingsModal").hidden = true);
+  $("saveSettings").onclick = async () => {
+    const body = {
+      kalshi_fee_rate: +s_kfee.value, poly_fee_rate: +s_pfee.value,
+      min_net_return: +s_minret.value, min_poly_volume: +s_minvol.value,
+      min_contracts: +s_minct.value,
     };
-  }
-  if ($("settingsBtn")) {
-    $("settingsBtn").onclick = async () => {
-      await loadSettings(); $("settingsModal").hidden = false;
-    };
-    $("closeSettings").onclick = () => ($("settingsModal").hidden = true);
-    $("saveSettings").onclick = async () => {
-      const body = {
-        kalshi_fee_rate: +s_kfee.value, poly_fee_rate: +s_pfee.value,
-        min_net_return: +s_minret.value, min_poly_volume: +s_minvol.value,
-        min_contracts: +s_minct.value,
-      };
-      const r = await fetch("/api/settings", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      if (r.ok) { $("settingsModal").hidden = true; toast("Saved — rescanning", "ok"); load(true); }
-      else toast("Save failed", "err");
-    };
-  }
+    const r = await fetch("/api/settings", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (r.ok) { $("settingsModal").hidden = true; toast("Saved — rescanning", "ok"); load(true); }
+    else toast("Save failed", "err");
+  };
 }
 
 renderHead();

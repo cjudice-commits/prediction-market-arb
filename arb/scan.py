@@ -87,7 +87,7 @@ def run_scan(force=False):
 
         summary = {"total": len(rows), "fetch_ms": fetch_ms}
         for st in ("ARB", "NO ARB", "BAD BASIS", "LOW SIZE",
-                   "NO DATA", "NO PAIR"):
+                   "NO DATA", "NO POLY", "NO KALSHI", "NO PAIR"):
             summary[st] = sum(1 for r in rows if r["status"] == st)
 
         payload = {

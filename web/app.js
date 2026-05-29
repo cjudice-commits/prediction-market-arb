@@ -305,7 +305,7 @@ function renderSummary(s) {
   ] : [
     ["ARB", "Live arbs", "s-arb"], ["NO ARB", "No edge", ""],
     ["BAD BASIS", "Bad basis", "s-bad"], ["LOW SIZE", "Low size", "s-warn"],
-    ["NO DATA", "No data", ""], ["total", "Scanned", ""],
+    ["NO POLY", "No Poly", ""], ["total", "Scanned", ""],
   ];
   $("summary").innerHTML = cards.map(([k, l, cls]) =>
     `<div class="stat ${cls}"><div class="n">${s[k] ?? 0}</div>

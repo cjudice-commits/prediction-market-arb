@@ -114,8 +114,19 @@ def evaluate(pair, kq, pq, settings, today=None):
     if not pair.get("poly_slug"):
         row["status"] = "NO PAIR"
         return row
-    if not kq or not pq or not ks or not ps:
+    # Surface which side is missing — bare "NO DATA" hid the real cause
+    # (commonly: Kalshi side liquid but the Polymarket slug doesn't resolve).
+    if not ks or not ps:
         row["status"] = "NO DATA"
+        return row
+    if not kq and not pq:
+        row["status"] = "NO DATA"
+        return row
+    if not pq:
+        row["status"] = "NO POLY"
+        return row
+    if not kq:
+        row["status"] = "NO KALSHI"
         return row
 
     kfee_rate = settings["kalshi_fee_rate"]

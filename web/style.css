@@ -263,6 +263,7 @@ tbody tr.r.open { background: rgba(108,140,255,.07); }
 .pill.BADBASIS { color: var(--bad); background: var(--bad-d); }
 .pill.LOWSIZE { color: var(--info); background: rgba(76,201,240,.12); }
 .pill.NODATA, .pill.NOPAIR { color: var(--faint); background: rgba(255,255,255,.05); }
+.pill.NOPOLY, .pill.NOKALSHI { color: var(--warn); background: var(--warn-d); }
 
 /* ---------- detail drawer ---------- */
 tr.detail td { padding: 0; border-bottom: 1px solid var(--line); }
