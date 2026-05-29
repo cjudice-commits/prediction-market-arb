@@ -31,6 +31,14 @@ def _f(v):
         return None
 
 
+def _ask(v):
+    """Like _f, but also drops the '1.0000' sentinel Kalshi returns when there
+    is no resting offer on that side. Real Kalshi asks are 1-99c, so a $1.00
+    ask is never executable and must not be treated as a tradeable quote."""
+    x = _f(v)
+    return x if (x is not None and x < 1.0) else None
+
+
 def parse_expiry(ticker):
     """KX...-26MAY31-7000 -> '2026-05-31', else None."""
     m = re.search(r"-(\d{2})([A-Z]{3})(\d{2})-", ticker)
@@ -49,9 +57,9 @@ def _quote(mkt):
     return {
         "ticker": t,
         "yes_bid": _f(mkt.get("yes_bid_dollars")),
-        "yes_ask": _f(mkt.get("yes_ask_dollars")),
+        "yes_ask": _ask(mkt.get("yes_ask_dollars")),
         "no_bid": _f(mkt.get("no_bid_dollars")),
-        "no_ask": _f(mkt.get("no_ask_dollars")),
+        "no_ask": _ask(mkt.get("no_ask_dollars")),
         "yes_ask_size": None,
         "no_ask_size": None,
         "open_interest": _f(mkt.get("open_interest_fp")) or 0.0,

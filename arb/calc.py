@@ -22,6 +22,12 @@ all resolution regions and key off the guaranteed worst case, NOT (1 - cost).
 """
 from datetime import date
 
+# Kalshi market statuses that mean the market is no longer live/tradeable.
+# A settled/finalized market still returns prices, but they are stale 1.0/0.0
+# sentinels (e.g. a month-end MINMON whose strike already resolved) and must
+# not be treated as a real quote.
+_DEAD_KALSHI = {"finalized", "settled", "closed", "determined"}
+
 
 def direction(ticker):
     return "Below" if "MINMON" in (ticker or "").upper() else "Above"
@@ -125,7 +131,8 @@ def evaluate(pair, kq, pq, settings, today=None):
     if not pq:
         row["status"] = "NO POLY"
         return row
-    if not kq:
+    if not kq or (kq.get("status") in _DEAD_KALSHI):
+        # Settled/finalized Kalshi leg: prices are stale sentinels, not a quote.
         row["status"] = "NO KALSHI"
         return row
 
@@ -149,7 +156,10 @@ def evaluate(pair, kq, pq, settings, today=None):
         cands.append(("NO+YES", "NO", kq["no_ask"], k_nsz,
                       "YES", pq["yes_ask"], pq.get("yes_ask_size")))
     if not cands:
-        row["status"] = "NO DATA"
+        # Both venues returned live quotes, but the opposite-side asks needed to
+        # build a hedge aren't both offered (e.g. deep-OTM 'below' markets where
+        # each venue only quotes the cheap YES side). There's data, just no arb.
+        row["status"] = "NO ARB"
         return row
 
     best = None  # (worst_pnl, ...)
