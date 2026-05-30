@@ -416,12 +416,32 @@ function venuePanel(name, tag, v) {
     </tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
+function kindBadge(r) {
+  const m = {
+    matched: ["matched", "#16c784", "#16c78422"],
+    "basis+": ["basis +", "#e0a93b", "#e0a93b22"],
+    "basis-": ["basis −", "#ef5350", "#ef535022"],
+    single: ["one leg", "#8a93a6", "#8a93a622"],
+  };
+  const [label, fg, bg] = m[r.kind] || m.single;
+  return `<span class="kindpill" style="background:${bg};color:${fg}">${label}</span>`;
+}
+
+function strikeBand(r) {
+  if (r.low_strike == null && r.high_strike == null) return "";
+  const f = (v) => (v == null ? "?" : v >= 1000 ? `${(v / 1000).toLocaleString()}k` : `${v}`);
+  if (r.kind === "matched") return `<span class="dimv mono">@ ${f(r.low_strike)}</span>`;
+  const lo = Math.min(r.low_strike, r.high_strike);
+  const hi = Math.max(r.low_strike, r.high_strike);
+  return `<span class="dimv mono">${f(lo)}–${f(hi)}</span>`;
+}
+
 function pairedView(rows) {
   if (!rows || !rows.length)
     return `<div class="vcard"><h4>Paired exposure</h4>
-      <p class="dimv">No held positions match a known Kalshi↔Polymarket arb
-      pair (pairs come from the Monthly map). Positions still show under
-      <b>By venue</b>.</p></div>`;
+      <p class="dimv">No held positions yet. Cross-venue hedges are matched
+      automatically from your live book and shown here; everything also appears
+      under <b>By venue</b>.</p></div>`;
   const body = rows.map((r) => {
     const legs = r.legs.map((l) => `<div class="leg2">
       <span class="tag ${l.venue === "Kalshi" ? "k" : "p"}">${l.venue[0]}</span>
@@ -431,7 +451,8 @@ function pairedView(rows) {
       <span>${pnl(l.pnl)}</span></div>`).join("");
     return `<tr>
       <td class="l"><span class="achip" style="background:${ac(r.asset)}22;color:${ac(r.asset)}">${esc(r.asset || "?")}</span>
-        ${r.complete ? '<span class="okpill">paired</span>' : '<span class="onepill">one leg</span>'}</td>
+        <div class="pairmeta">${kindBadge(r)} ${strikeBand(r)}</div>
+        ${r.note ? `<div class="dimv pairnote">${esc(r.note)}</div>` : ""}</td>
       <td class="l">${legs}</td>
       <td class="num">${usd(r.cost)}</td>
       <td class="num">${usd(r.value)}</td>
@@ -440,7 +461,7 @@ function pairedView(rows) {
   }).join("");
   return `<div class="vcard"><h4>Paired / netted exposure</h4>
     <table class="ptbl"><thead><tr>
-      <th class="l">Pair</th><th class="l">Legs</th>
+      <th class="l">Hedge</th><th class="l">Legs</th>
       <th>Cost</th><th>Value</th><th>Net P&amp;L</th>
     </tr></thead><tbody>${body}</tbody></table></div>`;
 }

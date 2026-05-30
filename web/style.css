@@ -371,6 +371,11 @@ tr.detail td { padding: 0; border-bottom: 1px solid var(--line); }
 .onepill { font-size: 10px; font-weight: 700; color: var(--warn);
   background: var(--warn-d); padding: 2px 8px; border-radius: 999px;
   margin-left: 6px; }
+.kindpill { font-size: 10px; font-weight: 800; padding: 2px 8px;
+  border-radius: 999px; letter-spacing: .02em; }
+.pairmeta { display: flex; align-items: center; gap: 7px; margin-top: 4px; }
+.pairnote { font-size: 10.5px; margin-top: 3px; max-width: 230px;
+  line-height: 1.3; }
 .leg2 { display: flex; align-items: center; gap: 8px; padding: 3px 0;
   font-size: 12px; }
 .leg2 .tag { width: 16px; height: 16px; display: grid; place-items: center;

@@ -12,6 +12,7 @@ Credentials come from data/secrets.json (git-ignored), supplied by the user.
 Missing/!configured venues degrade gracefully with setup guidance.
 """
 import base64
+import datetime
 import json
 import os
 import re
@@ -46,6 +47,29 @@ def _asset_from_ticker(t):
     for a in _ASSETS:
         if a in head:
             return a
+    return None
+
+
+# Polymarket slugs spell the asset out ("will-bitcoin-…"); map name -> symbol so
+# poly legs carry an asset for the paired view (Kalshi legs get it from ticker).
+_POLY_ASSET = [
+    ("bitcoin", "BTC"), ("ethereum", "ETH"), ("solana", "SOL"),
+    ("ripple", "XRP"), ("dogecoin", "DOGE"), ("hyperliquid", "HYPE"),
+    ("binance", "BNB"), ("litecoin", "LTC"), ("cardano", "ADA"),
+    ("avalanche", "AVAX"), ("chainlink", "LINK"), ("stellar", "XLM"),
+    ("zcash", "ZEC"), ("shiba", "SHIB"),
+    # short forms / tickers that also appear in slugs
+    ("btc", "BTC"), ("eth", "ETH"), ("sol", "SOL"), ("xrp", "XRP"),
+    ("doge", "DOGE"), ("bnb", "BNB"), ("hype", "HYPE"), ("zec", "ZEC"),
+    ("sui", "SUI"), ("trx", "TRX"), ("xlm", "XLM"),
+]
+
+
+def _asset_from_slug(slug):
+    s = (slug or "").lower()
+    for name, sym in _POLY_ASSET:
+        if name in s:
+            return sym
     return None
 
 
@@ -93,6 +117,7 @@ def _poly(wallet):
                        if p.get("percentPnl") is not None else None)
         out.append({
             "venue": "Polymarket",
+            "asset": _asset_from_slug(p.get("slug")) or _asset_from_slug(p.get("title")),
             "market": p.get("title"),
             "ref": p.get("slug"),
             "side": p.get("outcome"),
@@ -426,53 +451,228 @@ def _load_pairs():
         return []
 
 
-def _paired(poly_pos, kalshi_pos):
-    pairs = _load_pairs()
-    by_slug, by_tkr = {}, {}
-    for pr in pairs:
-        if pr.get("poly_slug"):
-            by_slug.setdefault(pr["poly_slug"], pr)
-        if pr.get("kalshi_ticker"):
-            by_tkr[pr["kalshi_ticker"]] = pr
+def _kalshi_dir(tkr):
+    t = (tkr or "").upper()
+    if "MAXMON" in t or "MAX" in t:
+        return "above"
+    if "MINMON" in t or "MIN" in t:
+        return "below"
+    return None
 
-    groups = {}
 
-    def key(pr):
-        return "%s|%s|%s" % (pr.get("asset"), pr.get("kalshi_ticker"),
-                             pr.get("poly_slug"))
+def _poly_dir(slug):
+    s = (slug or "").lower()
+    if "reach" in s or "hit" in s or "above" in s:
+        return "above"
+    if "dip" in s or "below" in s:
+        return "below"
+    return None
 
-    for p in poly_pos:
-        pr = by_slug.get(p["ref"])
-        if pr:
-            groups.setdefault(key(pr), {"pair": pr, "poly": [], "kalshi": []})
-            groups[key(pr)]["poly"].append(p)
-    for p in kalshi_pos:
-        pr = by_tkr.get(p["ref"])
-        if pr:
-            groups.setdefault(key(pr), {"pair": pr, "poly": [], "kalshi": []})
-            groups[key(pr)]["kalshi"].append(p)
+
+def _pays_high(direc, side):
+    """A leg 'pays high' if it settles $1 when the asset ends ABOVE its strike.
+    above+YES and below+NO pay high; above+NO and below+YES pay low."""
+    if direc is None:
+        return None
+    s = str(side or "").strip().lower()
+    if s in ("yes", "y", "up", "long"):
+        yes = True
+    elif s in ("no", "n", "down", "short"):
+        yes = False
+    else:
+        return None
+    return yes if direc == "above" else (not yes)
+
+
+def _kalshi_strike(tkr, lookup=None):
+    if lookup and lookup.get(tkr):
+        return lookup[tkr]
+    m = re.search(r"-(\d+)$", tkr or "")
+    return float(m.group(1)) / 100.0 if m else None
+
+
+def _poly_strike(slug, lookup=None):
+    if lookup and lookup.get(slug):
+        return lookup[slug]
+    s = (slug or "").lower()
+    m = re.search(r"(?:reach|hit|dip-to|dip|above|below)-(\d+(?:pt\d+)?)(k?)", s)
+    if not m:
+        return None
+    num = float(m.group(1).replace("pt", "."))
+    return num * 1000.0 if m.group(2) == "k" else num
+
+
+def _fmt_strike(v):
+    if v is None:
+        return "?"
+    if v >= 1000:
+        return "%gk" % (v / 1000.0)
+    return "%g" % v
+
+
+def _exp_key(leg):
+    """Group key by settlement month. Kalshi/Poly end_date is the day AFTER the
+    month being settled (00:00 UTC of the 1st), so step back a day first."""
+    d = (leg.get("end_date") or "")[:10]
+    try:
+        y, m, dd = (int(x) for x in d.split("-"))
+        dt = datetime.date(y, m, dd) - datetime.timedelta(days=1)
+        return "%04d-%02d" % (dt.year, dt.month)
+    except (ValueError, TypeError):
+        return "?"
+
+
+def _classify(leg, tkr_strike, slug_strike):
+    if leg.get("venue") == "Kalshi":
+        direc = _kalshi_dir(leg.get("ref"))
+        leg["_strike"] = _kalshi_strike(leg.get("ref"), tkr_strike)
+    else:
+        direc = _poly_dir(leg.get("ref"))
+        leg["_strike"] = _poly_strike(leg.get("ref"), slug_strike)
+    leg["_dir"] = direc
+    leg["_pays"] = _pays_high(direc, leg.get("side"))
+    return leg
+
+
+def _row_from_legs(legs, kind, complete, note, asset, expiry,
+                   low_strike=None, high_strike=None):
+    cost = sum((x.get("cost") or 0) for x in legs)
+    value = sum((x.get("value") or 0) for x in legs)
+    pnl = sum((x.get("pnl") or 0) for x in legs if x.get("pnl") is not None)
+    return {
+        "asset": asset, "kind": kind, "complete": complete, "note": note,
+        "expiry": expiry, "low_strike": low_strike, "high_strike": high_strike,
+        "legs": legs, "cost": cost, "value": value, "pnl": pnl,
+        "pnl_pct": (pnl / cost if cost else None),
+    }
+
+
+def _slice_leg(leg, qty):
+    """A view of `leg` holding only `qty` contracts, with cost/value/pnl
+    pro-rated. Used when one leg's size is split across several hedge rows."""
+    s = float(leg.get("size") or 0)
+    if s <= 0 or qty is None or abs(qty - s) < 1e-9:
+        return leg                             # whole leg — no split needed
+    frac = qty / s
+    out = dict(leg)
+    out["size"] = qty
+    for k in ("cost", "value", "pnl"):
+        v = leg.get(k)
+        out[k] = (v * frac) if isinstance(v, (int, float)) else v
+    return out
+
+
+def _match_bucket(legs, asset, expiry):
+    """Quantity-aware pairing of pays-low against pays-high legs across venues.
+    A hedge holds one of each: pays-low covers the downside, pays-high the up.
+
+      strikes equal     -> matched (clean barrier hedge)
+      low strike > high  -> basis+  (overlap band where BOTH legs win)
+      low strike < high  -> basis-  (gap band where NEITHER wins = basis risk)
+
+    Contracts are filled by size: exact-strike (matched, gap 0) pairs sort and
+    fill first, so a leg's excess only spills into a basis pair once every
+    matched pairing is exhausted. Each fill consumes min(remaining) contracts
+    from both legs; a partially used leg's economics are pro-rated. Cross-venue
+    only; reject absurd gaps (unfavorable > 10% of level, overlap > 25%)."""
+    lows = [l for l in legs if l.get("_pays") is False and l.get("_strike")]
+    highs = [l for l in legs if l.get("_pays") is True and l.get("_strike")]
+    other = [l for l in legs if l.get("_pays") is None or not l.get("_strike")]
+
+    rem_lo = [float(l.get("size") or 0) for l in lows]
+    rem_hi = [float(l.get("size") or 0) for l in highs]
+
+    cands = []
+    for li, lo in enumerate(lows):
+        for hi, hg in enumerate(highs):
+            if lo.get("venue") == hg.get("venue"):
+                continue                       # a real hedge spans both venues
+            ls, hs = lo["_strike"], hg["_strike"]
+            level = max(ls, hs) or 1.0
+            gap = hs - ls
+            if gap > 0 and gap > 0.10 * level:
+                continue                       # basis- gap too wide to be a hedge
+            if gap < 0 and (-gap) > 0.25 * level:
+                continue                       # basis+ overlap implausibly large
+            cands.append((abs(ls - hs), li, hi))
+    cands.sort()                               # gap 0 (matched) first, then nearest
 
     rows = []
-    for g in groups.values():
-        legs = g["poly"] + g["kalshi"]
-        cost = sum((x["cost"] or 0) for x in legs)
-        value = sum((x["value"] or 0) for x in legs)
-        pnl = sum((x["pnl"] or 0) for x in legs if x["pnl"] is not None)
-        rows.append({
-            "asset": g["pair"].get("asset"),
-            "kalshi_ticker": g["pair"].get("kalshi_ticker"),
-            "poly_slug": g["pair"].get("poly_slug"),
-            "kalshi_strike": g["pair"].get("kalshi_strike"),
-            "poly_strike": g["pair"].get("poly_strike"),
-            "legs": legs,
-            "cost": cost,
-            "value": value,
-            "pnl": pnl,
-            "pnl_pct": (pnl / cost if cost else None),
-            "complete": bool(g["poly"] and g["kalshi"]),
-        })
-    rows.sort(key=lambda r: r["pnl"], reverse=True)
-    return rows
+    for _, li, hi in cands:
+        q = min(rem_lo[li], rem_hi[hi])
+        if q <= 1e-9:
+            continue                           # one side already fully consumed
+        rem_lo[li] -= q
+        rem_hi[hi] -= q
+        lo, hg = lows[li], highs[hi]
+        ls, hs = lo["_strike"], hg["_strike"]
+        if abs(ls - hs) < 1e-9:
+            kind = "matched"
+            note = "hedged at %s" % _fmt_strike(ls)
+        elif ls > hs:
+            kind = "basis+"
+            note = ("overlap %s-%s — both legs win in the gap"
+                    % (_fmt_strike(hs), _fmt_strike(ls)))
+        else:
+            kind = "basis-"
+            note = ("gap %s-%s — neither leg wins between (basis risk)"
+                    % (_fmt_strike(ls), _fmt_strike(hs)))
+        rows.append(_row_from_legs([_slice_leg(hg, q), _slice_leg(lo, q)],
+                                   kind, True, note, asset, expiry,
+                                   low_strike=ls, high_strike=hs))
+
+    leftover = [_slice_leg(lo, rem_lo[i]) for i, lo in enumerate(lows)
+                if rem_lo[i] > 1e-9]
+    leftover += [_slice_leg(hg, rem_hi[i]) for i, hg in enumerate(highs)
+                 if rem_hi[i] > 1e-9]
+    leftover += other
+    return rows, leftover
+
+
+def _single_row(leg):
+    pays = leg.get("_pays")
+    strike = leg.get("_strike")
+    if pays is True and strike is not None:
+        note = "uncovered — pays only above %s" % _fmt_strike(strike)
+    elif pays is False and strike is not None:
+        note = "uncovered — pays only below %s" % _fmt_strike(strike)
+    else:
+        note = "unclassified leg"
+    return _row_from_legs([leg], "single", False, note,
+                          leg.get("asset"), _exp_key(leg))
+
+
+def _paired(poly_pos, kalshi_pos):
+    """Recognize economic hedges from live holdings, not just curated pairs.
+
+    Curated pairs.json (if present) only supplies authoritative strikes; the
+    matching itself keys off each leg's economics so any cross-venue,
+    opposite-direction hedge in the book is surfaced — matched or basis."""
+    pairs = _load_pairs()
+    tkr_strike = {p["kalshi_ticker"]: p.get("kalshi_strike")
+                  for p in pairs if p.get("kalshi_ticker")}
+    slug_strike = {p["poly_slug"]: p.get("poly_strike")
+                   for p in pairs if p.get("poly_slug")}
+
+    # Copy each leg so _classify's _pays/_strike/_dir scratch keys don't leak
+    # into the dicts returned under "polymarket"/"kalshi".
+    legs = [_classify(dict(p), tkr_strike, slug_strike)
+            for p in list(poly_pos) + list(kalshi_pos)]
+
+    buckets = {}
+    for l in legs:
+        buckets.setdefault((l.get("asset"), _exp_key(l)), []).append(l)
+
+    pair_rows, single_rows = [], []
+    for (asset, expiry), blegs in buckets.items():
+        pr, leftover = _match_bucket(blegs, asset, expiry)
+        pair_rows.extend(pr)
+        single_rows.extend(_single_row(l) for l in leftover)
+
+    pair_rows.sort(key=lambda r: (r["pnl"] if r["pnl"] is not None else 0),
+                   reverse=True)
+    single_rows.sort(key=lambda r: (r["asset"] or "z", -(r["pnl"] or 0)))
+    return pair_rows + single_rows
 
 
 def run_positions():
