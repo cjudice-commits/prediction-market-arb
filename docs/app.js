@@ -1,5 +1,17 @@
 "use strict";
 
+// Surface any uncaught error on-screen. Mobile browsers give no console access,
+// so a silent failure during init would otherwise leave #meta stuck at its
+// initial "connecting…" placeholder with no clue as to why.
+function _showFatal(msg) {
+  const m = document.getElementById("meta");
+  if (m) m.textContent = "error: " + msg;
+}
+window.addEventListener("error", (e) =>
+  _showFatal((e && e.message) || "script error"));
+window.addEventListener("unhandledrejection", (e) =>
+  _showFatal((e && e.reason && e.reason.message) || "load error"));
+
 const ASSET = {
   BTC: "#f7931a", ETH: "#7b87ff", SOL: "#19fb9b", XRP: "#3fb6e8",
   BNB: "#f3ba2f", DOGE: "#c2a633", HYPE: "#22d3a6", ZEC: "#f4b728",
@@ -589,7 +601,9 @@ async function load(force) {
     MODE === "positions" ? "Loading…" : "Scanning…";
   applyChrome();
   try {
-    const res = await fetch(endpoint() + (force ? "?force=1" : ""));
+    // endpoint() already cache-busts via ?t=; in STATIC_MODE there's no backend
+    // to "force", so the old + "?force=1" only produced a malformed double-? URL.
+    const res = await fetch(endpoint());
     const d = await res.json();
     if (!res.ok) throw new Error(d.error || res.status);
     if (MODE === "positions") {
@@ -708,6 +722,10 @@ function wire() {
   };
 }
 
-renderHead();
-wire();
-load(false);
+try {
+  renderHead();
+  wire();
+  load(false);
+} catch (e) {
+  _showFatal(e && e.message ? e.message : "init failed");
+}
