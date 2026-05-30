@@ -423,7 +423,8 @@ function kindBadge(r) {
     "basis-": ["basis −", "#ef5350", "#ef535022"],
     single: ["one leg", "#8a93a6", "#8a93a622"],
   };
-  const [label, fg, bg] = m[r.kind] || m.single;
+  const fb = r.complete ? ["paired", "#16c784", "#16c78422"] : m.single;
+  const [label, fg, bg] = m[r.kind] || fb;
   return `<span class="kindpill" style="background:${bg};color:${fg}">${label}</span>`;
 }
 
