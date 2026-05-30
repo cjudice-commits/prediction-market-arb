@@ -68,14 +68,20 @@ ASSETS = {
 }
 
 
-def gj(url):
+def gj(url, tries=5):
+    """GET JSON with exponential backoff. Kalshi/Poly rate-limit bursts, and a
+    silent failure mid-discovery would truncate the ladder, so retry hard."""
     rq = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    for _ in range(3):
+    delay = 0.5
+    for i in range(tries):
         try:
-            with urllib.request.urlopen(rq, timeout=20) as r:
+            with urllib.request.urlopen(rq, timeout=25) as r:
                 return json.loads(r.read().decode())
         except Exception:
-            time.sleep(0.6)
+            if i == tries - 1:
+                return None
+            time.sleep(delay)
+            delay = min(delay * 2, 8.0)
     return None
 
 
@@ -167,11 +173,14 @@ def nearest(poly_for_dir, strike):
 
 # ------------------------------------------------------------------- main
 def build(month_name, year):
-    rows = []
+    rows, zero_kalshi = [], []
     expcode = expiry_code(year, _MONTHNUM[month_name])
     print("Target expiry code: %s   Poly month: %s-%s" % (expcode, month_name, year))
     for asset, cfg in ASSETS.items():
         kl = kalshi_ladder(asset, expcode)
+        if not kl:
+            zero_kalshi.append(asset)        # every tracked asset has a ladder;
+                                             # empty == a failed/throttled fetch
         pl = poly_ladder(asset, cfg, month_name, year)
         by_dir = {"above": [], "below": []}
         for (d, ps), slug in pl.items():
@@ -191,7 +200,7 @@ def build(month_name, year):
             n_pair += slug is not None
         print("  %-5s kalshi=%-3d poly=%-3d  -> %d rows (%d with Poly)"
               % (asset, len(kl), len(pl), len(kl), n_pair))
-    return rows
+    return rows, zero_kalshi
 
 
 _MONTHNUM = {calendar.month_name[i].lower(): i for i in range(1, 13)}
@@ -214,10 +223,16 @@ def main():
         y, m = (t.year + 1, 1) if t.month == 12 else (t.year, t.month + 1)
     month_name = calendar.month_name[m].lower()
 
-    rows = build(month_name, y)
+    rows, zero_kalshi = build(month_name, y)
     with_poly = sum(1 for r in rows if r["poly_slug"])
     print("\nDiscovered %d rows (%d with a Polymarket leg)." % (len(rows), with_poly))
 
+    if zero_kalshi and not args.force:
+        print("ABORT: Kalshi discovery returned nothing for %s — almost "
+              "certainly a throttled/failed fetch, not reality. Re-run in a "
+              "minute (or --force to write a partial file)."
+              % ", ".join(zero_kalshi), file=sys.stderr)
+        return 2
     if rows and with_poly < 0.3 * len(rows):
         print("WARNING: very few rows got a Polymarket leg (%d/%d). Polymarket "
               "may have changed its %s event-slug pattern — check the per-asset "
