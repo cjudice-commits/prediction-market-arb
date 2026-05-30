@@ -565,9 +565,11 @@ function applyChrome() {
   $("summary").hidden = !scanner;
   document.querySelector(".toolbar").hidden = !scanner;
   document.querySelector("main").hidden = !scanner;
-  $("positions").hidden = scanner;
+  // Positions + IBKR panels exist only in the full local app, not the static
+  // dashboard build; guard them so a trimmed index.html can't throw here.
+  const pos = $("positions"); if (pos) pos.hidden = scanner;
   if (!scanner) { $("hero").hidden = true; $("hbanner").hidden = true; }
-  if (MODE !== "daily") $("ibkrSetup").hidden = true;
+  if (MODE !== "daily") { const ik = $("ibkrSetup"); if (ik) ik.hidden = true; }
 }
 
 function showIbkrSetup(payload) {
@@ -699,15 +701,21 @@ function wire() {
     b.classList.add("on"); renderBody();
   });
   let timer = null;
-  $("auto").onchange = (e) => {
+  // Auto-refresh + settings exist only in the full local app; the static
+  // dashboard build omits those elements. Guard each binding so a trimmed
+  // index.html can't throw here and abort wiring before the initial load().
+  const autoEl = $("auto");
+  if (autoEl) autoEl.onchange = (e) => {
     clearInterval(timer);
     if (e.target.checked) { load(true); timer = setInterval(() => load(true), 8000); }
   };
-  $("settingsBtn").onclick = async () => {
+  const setBtn = $("settingsBtn");
+  if (setBtn) setBtn.onclick = async () => {
     await loadSettings(); $("settingsModal").hidden = false;
   };
-  $("closeSettings").onclick = () => ($("settingsModal").hidden = true);
-  $("saveSettings").onclick = async () => {
+  $("closeSettings")?.addEventListener("click", () => ($("settingsModal").hidden = true));
+  const saveBtn = $("saveSettings");
+  if (saveBtn) saveBtn.onclick = async () => {
     const body = {
       kalshi_fee_rate: +s_kfee.value, poly_fee_rate: +s_pfee.value,
       min_net_return: +s_minret.value, min_poly_volume: +s_minvol.value,
