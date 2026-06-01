@@ -11,6 +11,9 @@ __pycache__/
 # Local preview staging
 .arb-preview/
 
+# pairs.json backup written by scripts/roll_month.py on every roll
+*.bak
+
 # Local Claude Code config (launch.json, settings.local.json, worktrees, etc.)
 .claude/
 
