@@ -755,120 +755,120 @@
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMAXMON-HYPE-26JUN30-9250",
     "kalshi_strike": 92.5,
-    "poly_slug": null,
-    "poly_strike": null,
+    "poly_slug": "will-hyperliquid-reach-92-in-june",
+    "poly_strike": 92.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMAXMON-HYPE-26JUN30-9000",
     "kalshi_strike": 90.0,
-    "poly_slug": null,
-    "poly_strike": null,
+    "poly_slug": "will-hyperliquid-reach-92-in-june",
+    "poly_strike": 92.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMAXMON-HYPE-26JUN30-8750",
     "kalshi_strike": 87.5,
-    "poly_slug": null,
-    "poly_strike": null,
+    "poly_slug": "will-hyperliquid-reach-88-in-june",
+    "poly_strike": 88.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMAXMON-HYPE-26JUN30-8500",
     "kalshi_strike": 85.0,
-    "poly_slug": null,
-    "poly_strike": null,
+    "poly_slug": "will-hyperliquid-reach-84-in-june",
+    "poly_strike": 84.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMAXMON-HYPE-26JUN30-8250",
     "kalshi_strike": 82.5,
-    "poly_slug": null,
-    "poly_strike": null,
+    "poly_slug": "will-hyperliquid-reach-84-in-june",
+    "poly_strike": 84.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMAXMON-HYPE-26JUN30-8000",
     "kalshi_strike": 80.0,
-    "poly_slug": null,
-    "poly_strike": null,
+    "poly_slug": "will-hyperliquid-reach-80-in-june",
+    "poly_strike": 80.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMAXMON-HYPE-26JUN30-7750",
     "kalshi_strike": 77.5,
-    "poly_slug": null,
-    "poly_strike": null,
+    "poly_slug": "will-hyperliquid-reach-76-in-june",
+    "poly_strike": 76.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMAXMON-HYPE-26JUN30-7500",
     "kalshi_strike": 75.0,
-    "poly_slug": null,
-    "poly_strike": null,
+    "poly_slug": "will-hyperliquid-reach-76-in-june",
+    "poly_strike": 76.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMINMON-HYPE-26JUN30-7000",
     "kalshi_strike": 70.0,
-    "poly_slug": "will-hyperliquid-dip-to-52-in-june",
-    "poly_strike": 52.0,
+    "poly_slug": "will-hyperliquid-dip-to-68-in-june",
+    "poly_strike": 68.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMINMON-HYPE-26JUN30-6750",
     "kalshi_strike": 67.5,
-    "poly_slug": "will-hyperliquid-dip-to-52-in-june",
-    "poly_strike": 52.0,
+    "poly_slug": "will-hyperliquid-dip-to-68-in-june",
+    "poly_strike": 68.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMINMON-HYPE-26JUN30-6500",
     "kalshi_strike": 65.0,
-    "poly_slug": "will-hyperliquid-dip-to-52-in-june",
-    "poly_strike": 52.0,
+    "poly_slug": "will-hyperliquid-dip-to-64-in-june",
+    "poly_strike": 64.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMINMON-HYPE-26JUN30-6250",
     "kalshi_strike": 62.5,
-    "poly_slug": "will-hyperliquid-dip-to-52-in-june",
-    "poly_strike": 52.0,
+    "poly_slug": "will-hyperliquid-dip-to-64-in-june",
+    "poly_strike": 64.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMINMON-HYPE-26JUN30-6000",
     "kalshi_strike": 60.0,
-    "poly_slug": "will-hyperliquid-dip-to-52-in-june",
-    "poly_strike": 52.0,
+    "poly_slug": "will-hyperliquid-dip-to-60-in-june",
+    "poly_strike": 60.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMINMON-HYPE-26JUN30-5750",
     "kalshi_strike": 57.5,
-    "poly_slug": "will-hyperliquid-dip-to-52-in-june",
-    "poly_strike": 52.0,
+    "poly_slug": "will-hyperliquid-dip-to-56-in-june",
+    "poly_strike": 56.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMINMON-HYPE-26JUN30-5500",
     "kalshi_strike": 55.0,
-    "poly_slug": "will-hyperliquid-dip-to-52-in-june",
-    "poly_strike": 52.0,
+    "poly_slug": "will-hyperliquid-dip-to-56-in-june",
+    "poly_strike": 56.0,
     "active": true
   },
   {

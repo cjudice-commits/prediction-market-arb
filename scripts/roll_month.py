@@ -46,7 +46,8 @@ KBASE = "https://api.elections.kalshi.com/trade-api/v2"
 GBASE = "https://gamma-api.polymarket.com"
 
 # asset -> Polymarket name + event-slug templates ({m}=month name, {y}=year).
-# Assets without an event container (HYPE) carry a `probe` strike list instead.
+# A `probe` strike list is a fallback used when the event container is missing
+# (or hasn't listed yet) -- HYPE keeps one in case its event lags the others.
 ASSETS = {
     "BTC":  dict(name="bitcoin",     events=["what-price-will-bitcoin-hit-in-{m}-{y}",
                                              "what-price-will-bitcoin-hit-in-{m}"]),
@@ -60,8 +61,9 @@ ASSETS = {
                                              "what-price-will-dogecoin-hit-in-{m}"]),
     "BNB":  dict(name="bnb",         events=["what-price-will-bnb-hit-in-{m}",
                                              "what-price-will-bnb-hit-in-{m}-{y}"]),
-    "HYPE": dict(name="hyperliquid", events=[],
-                 probe=[52, 48, 44, 40, 38, 36, 32, 30, 28, 24]),
+    "HYPE": dict(name="hyperliquid", events=["what-price-will-hyperliquid-hit-in-{m}",
+                                             "what-price-will-hyperliquid-hit-in-{m}-{y}"],
+                 probe=[52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92]),
     "ZEC":  dict(name="zcash",       events=["what-price-will-zcash-hit-in-{m}-{y}",
                                              "what-price-will-zcash-hit-in-{m}"],
                  probe=[]),
