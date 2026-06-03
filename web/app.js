@@ -253,9 +253,13 @@ function drawer(r) {
       ${kv("Basis %", fmt(r.basis_pct, "pct") + (r.basis_favorable ? ' <span class="pos">✓ favorable</span>' : ' <span class="neg">✗ risk</span>'))}
       ${kv("Max contracts", r.max_contracts != null ? Math.round(r.max_contracts).toLocaleString() : "—")}
       ${hRows}
-    </div></div>`;
+    </div>${MODE === "monthly" && r.best_side && r.kalshi_ticker && r.poly_slug
+      ? `<div class="prep-row">
+        <button class="prep-btn" data-ticker="${esc(r.kalshi_ticker)}" data-slug="${esc(r.poly_slug)}">Prepare trade ▸</button>
+        <span class="prep-hint">read-only preview · places nothing</span>
+      </div>` : ""}</div>`;
   return `<tr class="detail"><td colspan="${COLS().length}">
-    <div class="drawer">${kCard}${pCard}${bd}</div></td></tr>`;
+    <div class="drawer">${bd}${kCard}${pCard}</div></td></tr>`;
 }
 
 function renderBody() {
@@ -290,6 +294,10 @@ function renderBody() {
       openKey = openKey === tr.dataset.id ? null : tr.dataset.id;
       renderBody();
     };
+  });
+  document.querySelectorAll("#body .prep-btn").forEach((btn) => btn.onclick = (e) => {
+    e.stopPropagation();
+    openTicket(btn.dataset.ticker, btn.dataset.slug);
   });
 }
 
@@ -680,6 +688,80 @@ async function loadSettings() {
   s_minct.value = s.min_contracts;
 }
 
+// ---- Prepare-trade ticket (Step 1: read-only preview, places no orders) ----
+let TICKET = null;
+
+function openTicket(ticker, slug) {
+  TICKET = { ticker, slug };
+  $("ticketModal").hidden = false;
+  $("tkMax").value = "";
+  $("tkBuf").value = "1";
+  $("ticketBody").innerHTML = `<div class="tk-load">Pulling fresh quotes…</div>`;
+  refreshTicket();
+}
+
+function closeTicket() {
+  $("ticketModal").hidden = true;
+  TICKET = null;
+}
+
+async function refreshTicket() {
+  if (!TICKET) return;
+  const p = new URLSearchParams({ ticker: TICKET.ticker, slug: TICKET.slug });
+  const mx = $("tkMax").value, bf = $("tkBuf").value;
+  if (mx) p.set("max", mx);
+  if (bf !== "") p.set("buffer", bf);
+  try {
+    const res = await fetch("/api/prepare?" + p.toString());
+    const t = await res.json();
+    $("ticketBody").innerHTML =
+      (!res.ok || t.error) ? ticketError(t) : ticketHTML(t);
+  } catch (e) {
+    $("ticketBody").innerHTML = `<div class="tk-err">Failed: ${esc(e.message)}</div>`;
+  }
+}
+
+function ticketError(t) {
+  return `<div class="tk-err">${esc((t && t.error) || "Could not prepare")}
+    ${t && t.status ? `<span class="dimv">(status ${esc(t.status)})</span>` : ""}</div>`;
+}
+
+function ticketHTML(t) {
+  const c = (n, d = 2) => n == null ? "—"
+    : "$" + (+n).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
+  const ct = (n) => n == null ? "—" : Math.round(n).toLocaleString();
+  const order = (o) => {
+    const dp = o.venue === "Kalshi" ? 2 : 3;
+    return `<div class="tk-order">
+      <span class="tag ${o.venue === "Kalshi" ? "k" : "p"}">${o.venue}</span>
+      <span class="tk-buy">BUY</span>
+      <span class="sidetag ${esc(o.side)}">${esc((o.side || "—").toUpperCase())}</span>
+      <span class="tk-sz">${ct(o.size)}<span class="dimv"> ct</span></span>
+      <span class="tk-px">@ ${o.limit != null ? (+o.limit).toFixed(dp) : "—"}
+        <span class="dimv">(ask ${o.ask != null ? (+o.ask).toFixed(dp) : "—"})</span></span>
+      <span class="tk-cost">${c(o.cost)}</span>
+    </div>`;
+  };
+  const wp = t.guaranteed_positive, wct = t.worst_pnl_ct, wt = t.worst_pnl_total;
+  const stat = (l, v, cls) =>
+    `<div class="tk-stat"><span>${l}</span><b class="${cls || ""}">${v}</b></div>`;
+  const warn = (t.warnings || []).map((w) => `<li>${esc(w)}</li>`).join("");
+  return `<div class="tk-head">
+      <span class="achip" style="background:${ac(t.asset)}22;color:${ac(t.asset)}">${esc(t.asset || "?")}</span>
+      <span class="dimv">status ${esc(t.status || "—")} · as of ${esc(t.as_of || "")}</span>
+    </div>
+    <div class="tk-orders">${order(t.kalshi)}${order(t.poly)}</div>
+    <div class="tk-stats">
+      ${stat("Size", `${ct(t.size)}${t.available != null ? ` <span class="dimv">/ ${ct(t.available)} avail</span>` : ""}`)}
+      ${stat("Combined cost", t.combined_cost_ct != null ? "$" + (+t.combined_cost_ct).toFixed(4) + ' <span class="dimv">/ct</span>' : "—")}
+      ${stat("Capital needed", c(t.capital_required))}
+      ${stat("Worst-case P&L", `${wt != null ? (wt > 0 ? "+" : "") + c(wt) : "—"}${wct != null ? ` <span class="dimv">(${wct > 0 ? "+" : ""}$${(+wct).toFixed(4)}/ct)</span>` : ""}`, wp ? "pos" : "neg")}
+      ${stat("Fees (total)", c(t.fees_total))}
+      ${stat("Net return", t.net_return != null ? (t.net_return * 100).toFixed(2) + "%" : "—", wp ? "pos" : "")}
+    </div>
+    ${warn ? `<ul class="tk-warn">${warn}</ul>` : ""}`;
+}
+
 function wire() {
   document.querySelectorAll("#tabs button").forEach((b) => b.onclick = () => {
     if (b.classList.contains("on")) return;
@@ -724,6 +806,17 @@ function wire() {
     if (r.ok) { $("settingsModal").hidden = true; toast("Saved — rescanning", "ok"); load(true); }
     else toast("Save failed", "err");
   };
+
+  // prepare-ticket modal controls
+  $("tkClose").onclick = closeTicket;
+  $("ticketModal").addEventListener("click", (e) => {
+    if (e.target === $("ticketModal")) closeTicket();
+  });
+  $("tkMax").addEventListener("change", refreshTicket);
+  $("tkBuf").addEventListener("change", refreshTicket);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !$("ticketModal").hidden) closeTicket();
+  });
 }
 
 renderHead();

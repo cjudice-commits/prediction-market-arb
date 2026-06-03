@@ -15,7 +15,7 @@ import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 
-from arb import scan
+from arb import scan, prepare
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.join(ROOT, "web")
@@ -69,6 +69,26 @@ class Handler(BaseHTTPRequestHandler):
             force = parse_qs(u.query).get("force", ["0"])[0] == "1"
             try:
                 return self._send(200, scan.run_positions(force=force))
+            except Exception as e:
+                return self._send(500, {"error": "%s: %s"
+                                        % (type(e).__name__, e)})
+        if u.path == "/api/prepare":
+            # Read-only: build a preview ticket for one pair. Places NO orders.
+            qs = parse_qs(u.query)
+            ticker = qs.get("ticker", [""])[0]
+            slug = qs.get("slug", [""])[0]
+            raw_max = qs.get("max", [""])[0]
+            try:
+                max_size = int(float(raw_max)) if raw_max else None
+            except (TypeError, ValueError):
+                max_size = None
+            try:
+                buffer_cents = float(qs.get("buffer", ["1"])[0])
+            except (TypeError, ValueError):
+                buffer_cents = 1.0
+            try:
+                return self._send(200, prepare.run_prepare(
+                    ticker, slug, max_size, buffer_cents))
             except Exception as e:
                 return self._send(500, {"error": "%s: %s"
                                         % (type(e).__name__, e)})

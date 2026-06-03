@@ -107,6 +107,27 @@
   </div>
 </div>
 
+<div id="ticketModal" class="modal" hidden>
+  <div class="card tk-card">
+    <div class="tk-top">
+      <h2>Prepare trade <span class="tk-badge">PREVIEW ONLY</span></h2>
+      <button id="tkClose" class="ghost tk-x" aria-label="Close">✕</button>
+    </div>
+    <div class="tk-banner">Nothing is sent to Kalshi or Polymarket. This is exactly
+      what the two orders <b>would</b> be — for review only.</div>
+    <div id="ticketBody"></div>
+    <div class="tk-controls">
+      <label>Max size <input type="number" id="tkMax" min="1" step="1" placeholder="all"></label>
+      <label>Slippage buffer (¢) <input type="number" id="tkBuf" min="0" step="1" value="1"></label>
+    </div>
+    <div class="tk-foot">
+      <button class="primary tk-confirm" disabled
+        title="Execution is not wired — this is Step 1 (preview only)">Confirm &amp; Send — not enabled</button>
+      <span class="tk-foot-note">Step&nbsp;2 would place these with your keys, only on your click.</span>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast" hidden></div>
 <script src="app.js"></script>
 </body>
