@@ -125,7 +125,10 @@ def main():
     print("Arb scanner running -> http://127.0.0.1:%d" % port)
     print("Press Ctrl+C to stop.")
     from arb import alerts
-    alerts.start_poller()
+    if os.environ.get("ARB_NO_POLLER") == "1":
+        print("ARB_NO_POLLER=1 -> local SMS poller off (GitHub Actions alerts).")
+    else:
+        alerts.start_poller()
     try:
         srv.serve_forever()
     except KeyboardInterrupt:

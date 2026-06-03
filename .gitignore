@@ -14,6 +14,9 @@ __pycache__/
 # pairs.json backup written by scripts/roll_month.py on every roll
 *.bak
 
+# server log (LaunchAgent / manual run)
+*.log
+
 # Local Claude Code config (launch.json, settings.local.json, worktrees, etc.)
 .claude/
 
