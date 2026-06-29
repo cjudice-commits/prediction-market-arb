@@ -1,4 +1,11 @@
 {
-  "active": [],
-  "updated_at": "2026-06-29T06:19:16Z"
+  "active": [
+    "KXETHMAXMON-ETH-26JUN30-250000|will-ethereum-reach-2500-in-june-2026",
+    "KXETHMINMON-ETH-26JUN30-100000|will-ethereum-dip-to-1000-in-june-2026",
+    "KXSOLMAXMON-SOL-26JUN30-9000|will-solana-reach-90-in-june-2026",
+    "KXSOLMINMON-SOL-26JUN30-5000|will-solana-dip-to-50-in-june-2026",
+    "KXXRPMAXMON-XRP-26JUN30-140|will-xrp-reach-1pt4-in-june-2026",
+    "KXXRPMINMON-XRP-26JUN30-080|will-xrp-dip-to-0pt8-in-june-2026"
+  ],
+  "updated_at": "2026-06-29T06:24:24Z"
 }
