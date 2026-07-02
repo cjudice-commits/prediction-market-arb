@@ -1,4 +1,17 @@
 {
-  "active": [],
-  "updated_at": "2026-07-02T08:39:14Z"
+  "active": [
+    "KXBTCMAXMON-BTC-26JUL31-8000000|will-bitcoin-reach-80k-in-july-2026",
+    "KXBTCMAXMON-BTC-26JUL31-8250000|will-bitcoin-reach-82pt5k-in-july-2026",
+    "KXETHMAXMON-ETH-26JUL31-200000|will-ethereum-reach-2000-in-july-2026",
+    "KXETHMAXMON-ETH-26JUL31-250000|will-ethereum-reach-2500-in-july-2026",
+    "KXETHMAXMON-ETH-26JUL31-275000|will-ethereum-reach-2500-in-july-2026",
+    "KXETHMAXMON-ETH-26JUL31-300000|will-ethereum-reach-2500-in-july-2026",
+    "KXETHMAXMON-ETH-26JUL31-325000|will-ethereum-reach-2500-in-july-2026",
+    "KXETHMAXMON-ETH-26JUL31-350000|will-ethereum-reach-2500-in-july-2026",
+    "KXETHMAXMON-ETH-26JUL31-375000|will-ethereum-reach-2500-in-july-2026",
+    "KXETHMINMON-ETH-26JUL31-50000|will-ethereum-dip-to-700-in-july-2026",
+    "KXSOLMINMON-SOL-26JUL31-4000|will-solana-dip-to-40-in-july-2026",
+    "KXSOLMINMON-SOL-26JUL31-5000|will-solana-dip-to-50-in-july-2026"
+  ],
+  "updated_at": "2026-07-02T08:44:37Z"
 }
