@@ -67,15 +67,15 @@
     "asset": "BTC",
     "kalshi_ticker": "KXBTCMINMON-BTC-26JUL31-6000000",
     "kalshi_strike": 60000.0,
-    "poly_slug": "will-bitcoin-dip-to-57pt5k-in-july-2026",
-    "poly_strike": 57500.0,
+    "poly_slug": "will-bitcoin-dip-to-60000-in-july-20260706151220612-754",
+    "poly_strike": 60000.0,
     "active": true
   },
   {
     "asset": "BTC",
     "kalshi_ticker": "KXBTCMINMON-BTC-26JUL31-5750000",
     "kalshi_strike": 57500.0,
-    "poly_slug": "will-bitcoin-dip-to-57pt5k-in-july-2026",
+    "poly_slug": "will-bitcoin-dip-to-57pt5k-in-july-2026-618",
     "poly_strike": 57500.0,
     "active": true
   },
@@ -83,7 +83,7 @@
     "asset": "BTC",
     "kalshi_ticker": "KXBTCMINMON-BTC-26JUL31-5500000",
     "kalshi_strike": 55000.0,
-    "poly_slug": "will-bitcoin-dip-to-55k-in-july-2026",
+    "poly_slug": "will-bitcoin-dip-to-55k-in-july-2026-381",
     "poly_strike": 55000.0,
     "active": true
   },
@@ -91,7 +91,7 @@
     "asset": "BTC",
     "kalshi_ticker": "KXBTCMINMON-BTC-26JUL31-5250000",
     "kalshi_strike": 52500.0,
-    "poly_slug": "will-bitcoin-dip-to-52pt5k-in-july-2026",
+    "poly_slug": "will-bitcoin-dip-to-52pt5k-in-july-2026-976",
     "poly_strike": 52500.0,
     "active": true
   },
@@ -99,7 +99,7 @@
     "asset": "BTC",
     "kalshi_ticker": "KXBTCMINMON-BTC-26JUL31-5000000",
     "kalshi_strike": 50000.0,
-    "poly_slug": "will-bitcoin-dip-to-50k-in-july-2026",
+    "poly_slug": "will-bitcoin-dip-to-50k-in-july-2026-812",
     "poly_strike": 50000.0,
     "active": true
   },
@@ -107,7 +107,7 @@
     "asset": "BTC",
     "kalshi_ticker": "KXBTCMINMON-BTC-26JUL31-4750000",
     "kalshi_strike": 47500.0,
-    "poly_slug": "will-bitcoin-dip-to-47pt5k-in-july-2026",
+    "poly_slug": "will-bitcoin-dip-to-47pt5k-in-july-2026-918",
     "poly_strike": 47500.0,
     "active": true
   },
@@ -115,7 +115,7 @@
     "asset": "BTC",
     "kalshi_ticker": "KXBTCMINMON-BTC-26JUL31-4500000",
     "kalshi_strike": 45000.0,
-    "poly_slug": "will-bitcoin-dip-to-45k-in-july-2026",
+    "poly_slug": "will-bitcoin-dip-to-45k-in-july-2026-597",
     "poly_strike": 45000.0,
     "active": true
   },
@@ -123,7 +123,7 @@
     "asset": "BTC",
     "kalshi_ticker": "KXBTCMINMON-BTC-26JUL31-4250000",
     "kalshi_strike": 42500.0,
-    "poly_slug": "will-bitcoin-dip-to-42pt5k-in-july-2026",
+    "poly_slug": "will-bitcoin-dip-to-42pt5k-in-july-2026-821",
     "poly_strike": 42500.0,
     "active": true
   },
@@ -179,8 +179,8 @@
     "asset": "ETH",
     "kalshi_ticker": "KXETHMAXMON-ETH-26JUL31-225000",
     "kalshi_strike": 2250.0,
-    "poly_slug": "will-ethereum-reach-2200-in-july-2026",
-    "poly_strike": 2200.0,
+    "poly_slug": "will-ethereum-reach-2300-in-july-2026",
+    "poly_strike": 2300.0,
     "active": true
   },
   {
@@ -195,7 +195,7 @@
     "asset": "ETH",
     "kalshi_ticker": "KXETHMINMON-ETH-26JUL31-150000",
     "kalshi_strike": 1500.0,
-    "poly_slug": "will-ethereum-dip-to-1500-in-july-2026",
+    "poly_slug": "will-ethereum-dip-to-1500-in-july-2026-446-668",
     "poly_strike": 1500.0,
     "active": true
   },
@@ -203,7 +203,7 @@
     "asset": "ETH",
     "kalshi_ticker": "KXETHMINMON-ETH-26JUL31-125000",
     "kalshi_strike": 1250.0,
-    "poly_slug": "will-ethereum-dip-to-1300-in-july-2026",
+    "poly_slug": "will-ethereum-dip-to-1300-in-july-2026-715",
     "poly_strike": 1300.0,
     "active": true
   },
@@ -219,7 +219,7 @@
     "asset": "ETH",
     "kalshi_ticker": "KXETHMINMON-ETH-26JUL31-75000",
     "kalshi_strike": 750.0,
-    "poly_slug": "will-ethereum-dip-to-800-in-july-2026",
+    "poly_slug": "will-ethereum-dip-to-800-in-july-2026-717",
     "poly_strike": 800.0,
     "active": true
   },
@@ -227,7 +227,7 @@
     "asset": "ETH",
     "kalshi_ticker": "KXETHMINMON-ETH-26JUL31-50000",
     "kalshi_strike": 500.0,
-    "poly_slug": "will-ethereum-dip-to-700-in-july-2026",
+    "poly_slug": "will-ethereum-dip-to-700-in-july-2026-526",
     "poly_strike": 700.0,
     "active": true
   },
@@ -235,7 +235,7 @@
     "asset": "ETH",
     "kalshi_ticker": "KXETHMINMON-ETH-26JUL31-25000",
     "kalshi_strike": 250.0,
-    "poly_slug": "will-ethereum-dip-to-700-in-july-2026",
+    "poly_slug": "will-ethereum-dip-to-700-in-july-2026-526",
     "poly_strike": 700.0,
     "active": true
   },
@@ -259,8 +259,8 @@
     "asset": "SOL",
     "kalshi_ticker": "KXSOLMAXMON-SOL-26JUL31-10500",
     "kalshi_strike": 105.0,
-    "poly_slug": "will-solana-reach-100-in-july-2026",
-    "poly_strike": 100.0,
+    "poly_slug": "will-solana-reach-110-in-july-2026",
+    "poly_strike": 110.0,
     "active": true
   },
   {
@@ -275,8 +275,8 @@
     "asset": "SOL",
     "kalshi_ticker": "KXSOLMAXMON-SOL-26JUL31-9500",
     "kalshi_strike": 95.0,
-    "poly_slug": "will-solana-reach-90-in-july-2026",
-    "poly_strike": 90.0,
+    "poly_slug": "will-solana-reach-100-in-july-2026",
+    "poly_strike": 100.0,
     "active": true
   },
   {
@@ -299,7 +299,7 @@
     "asset": "SOL",
     "kalshi_ticker": "KXSOLMAXMON-SOL-26JUL31-8000",
     "kalshi_strike": 80.0,
-    "poly_slug": "will-solana-reach-80-in-july-2026",
+    "poly_slug": "will-solana-reach-80-in-july-2026-from-july-9",
     "poly_strike": 80.0,
     "active": true
   },
@@ -347,8 +347,8 @@
     "asset": "SOL",
     "kalshi_ticker": "KXSOLMINMON-SOL-26JUL31-4500",
     "kalshi_strike": 45.0,
-    "poly_slug": "will-solana-dip-to-40-in-july-2026",
-    "poly_strike": 40.0,
+    "poly_slug": "will-solana-dip-to-50-in-july-2026",
+    "poly_strike": 50.0,
     "active": true
   },
   {
@@ -395,8 +395,8 @@
     "asset": "XRP",
     "kalshi_ticker": "KXXRPMAXMON-XRP-26JUL31-150",
     "kalshi_strike": 1.5,
-    "poly_slug": "will-xrp-reach-1pt4-in-july-2026",
-    "poly_strike": 1.4,
+    "poly_slug": "will-xrp-reach-1pt6-in-july-2026",
+    "poly_strike": 1.6,
     "active": true
   },
   {
@@ -443,8 +443,8 @@
     "asset": "XRP",
     "kalshi_ticker": "KXXRPMINMON-XRP-26JUL31-090",
     "kalshi_strike": 0.9,
-    "poly_slug": "will-xrp-dip-to-0pt8-in-july-2026",
-    "poly_strike": 0.8,
+    "poly_slug": "will-xrp-dip-to-1-in-july-2026",
+    "poly_strike": 1.0,
     "active": true
   },
   {
@@ -475,8 +475,8 @@
     "asset": "XRP",
     "kalshi_ticker": "KXXRPMINMON-XRP-26JUL31-050",
     "kalshi_strike": 0.5,
-    "poly_slug": "will-xrp-dip-to-0pt4-in-july-2026",
-    "poly_strike": 0.4,
+    "poly_slug": "will-xrp-dip-to-0pt6-in-july-2026",
+    "poly_strike": 0.6,
     "active": true
   },
   {
@@ -779,32 +779,32 @@
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMAXMON-HYPE-26JUL31-7250",
     "kalshi_strike": 72.5,
-    "poly_slug": "will-hyperliquid-reach-72-in-july",
-    "poly_strike": 72.0,
+    "poly_slug": "will-hyperliquid-reach-76-in-july",
+    "poly_strike": 76.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMAXMON-HYPE-26JUL31-7000",
     "kalshi_strike": 70.0,
-    "poly_slug": "will-hyperliquid-reach-68-in-july",
-    "poly_strike": 68.0,
+    "poly_slug": "will-hyperliquid-reach-76-in-july",
+    "poly_strike": 76.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMAXMON-HYPE-26JUL31-6750",
     "kalshi_strike": 67.5,
-    "poly_slug": "will-hyperliquid-reach-68-in-july",
-    "poly_strike": 68.0,
+    "poly_slug": "will-hyperliquid-reach-76-in-july",
+    "poly_strike": 76.0,
     "active": true
   },
   {
     "asset": "HYPE",
     "kalshi_ticker": "KXHYPEMAXMON-HYPE-26JUL31-6500",
     "kalshi_strike": 65.0,
-    "poly_slug": "will-hyperliquid-reach-68-in-july",
-    "poly_strike": 68.0,
+    "poly_slug": "will-hyperliquid-reach-76-in-july",
+    "poly_strike": 76.0,
     "active": true
   },
   {
