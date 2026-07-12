@@ -2,9 +2,12 @@
   "active": [
     "KXBTCMINMON-BTC-26JUL31-4250000|will-bitcoin-dip-to-42pt5k-in-july-2026-821",
     "KXBTCMINMON-BTC-26JUL31-4750000|will-bitcoin-dip-to-47pt5k-in-july-2026-918",
+    "KXETHMAXMON-ETH-26JUL31-200000|will-ethereum-reach-2000-in-july-2026",
     "KXETHMINMON-ETH-26JUL31-100000|will-ethereum-dip-to-1000-in-july-2026",
     "KXHYPEMINMON-HYPE-26JUL31-4500|will-hyperliquid-dip-to-48-in-july",
-    "KXHYPEMINMON-HYPE-26JUL31-4750|will-hyperliquid-dip-to-48-in-july"
+    "KXHYPEMINMON-HYPE-26JUL31-4750|will-hyperliquid-dip-to-48-in-july",
+    "KXSOLMINMON-SOL-26JUL31-7000|will-solana-dip-to-70-in-july-2026",
+    "KXXRPMINMON-XRP-26JUL31-100|will-xrp-dip-to-1-in-july-2026"
   ],
-  "updated_at": "2026-07-12T06:14:15Z"
+  "updated_at": "2026-07-12T06:19:20Z"
 }
