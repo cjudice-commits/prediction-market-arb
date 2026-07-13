@@ -1,14 +1,16 @@
 {
   "active": [
+    "KXBTCMAXMON-BTC-26JUL31-7000000|will-bitcoin-reach-70k-in-july-2026",
     "KXBTCMAXMON-BTC-26JUL31-7500000|will-bitcoin-reach-75k-in-july-2026",
     "KXBTCMAXMON-BTC-26JUL31-8000000|will-bitcoin-reach-80k-in-july-2026",
     "KXBTCMAXMON-BTC-26JUL31-8250000|will-bitcoin-reach-82pt5k-in-july-2026",
     "KXBTCMINMON-BTC-26JUL31-4250000|will-bitcoin-dip-to-42pt5k-in-july-2026-821",
     "KXBTCMINMON-BTC-26JUL31-5000000|will-bitcoin-dip-to-50k-in-july-2026-812",
+    "KXHYPEMAXMON-HYPE-26JUL31-8000|will-hyperliquid-reach-80-in-july",
     "KXSOLMINMON-SOL-26JUL31-5000|will-solana-dip-to-50-in-july-2026",
+    "KXXRPMAXMON-XRP-26JUL31-160|will-xrp-reach-1pt6-in-july-2026",
     "KXXRPMAXMON-XRP-26JUL31-170|will-xrp-reach-1pt6-in-july-2026",
-    "KXXRPMAXMON-XRP-26JUL31-180|will-xrp-reach-1pt8-in-july-2026",
-    "KXXRPMINMON-XRP-26JUL31-100|will-xrp-dip-to-1-in-july-2026"
+    "KXXRPMAXMON-XRP-26JUL31-180|will-xrp-reach-1pt8-in-july-2026"
   ],
-  "updated_at": "2026-07-13T14:04:20Z"
+  "updated_at": "2026-07-13T14:09:24Z"
 }
