@@ -1,4 +1,10 @@
 {
-  "active": [],
-  "updated_at": "2026-07-26T13:29:13Z"
+  "active": [
+    "KXBTCMAXMON-BTC-26JUL31-7500000|will-bitcoin-reach-75k-in-july-2026",
+    "KXETHMINMON-ETH-26JUL31-150000|will-ethereum-dip-to-1500-in-july-2026-446-668",
+    "KXXRPMAXMON-XRP-26JUL31-140|will-xrp-reach-1pt4-in-july-2026",
+    "KXXRPMAXMON-XRP-26JUL31-160|will-xrp-reach-1pt6-in-july-2026",
+    "KXXRPMINMON-XRP-26JUL31-100|will-xrp-dip-to-1-in-july-2026"
+  ],
+  "updated_at": "2026-07-26T13:34:24Z"
 }
