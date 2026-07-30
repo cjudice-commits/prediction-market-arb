@@ -1,4 +1,17 @@
 {
-  "active": [],
-  "updated_at": "2026-07-30T05:19:17Z"
+  "active": [
+    "KXBNBMAXMON-BNB-26JUL31-60000|will-bnb-reach-600-in-july",
+    "KXBNBMAXMON-BNB-26JUL31-61000|will-bnb-reach-600-in-july",
+    "KXBNBMAXMON-BNB-26JUL31-62000|will-bnb-reach-600-in-july",
+    "KXBNBMINMON-BNB-26JUL31-49000|will-bnb-dip-to-500-in-july",
+    "KXBNBMINMON-BNB-26JUL31-50000|will-bnb-dip-to-500-in-july",
+    "KXBTCMAXMON-BTC-26JUL31-6750000|will-bitcoin-reach-67pt5k-in-july-2026",
+    "KXBTCMAXMON-BTC-26JUL31-7000000|will-bitcoin-reach-70k-in-july-2026",
+    "KXBTCMINMON-BTC-26JUL31-5500000|will-bitcoin-dip-to-55k-in-july-2026-381",
+    "KXBTCMINMON-BTC-26JUL31-5750000|will-bitcoin-dip-to-57pt5k-in-july-2026-618",
+    "KXETHMINMON-ETH-26JUL31-150000|will-ethereum-dip-to-1500-in-july-2026-446-668",
+    "KXSOLMAXMON-SOL-26JUL31-10000|will-solana-reach-100-in-july-2026",
+    "KXXRPMINMON-XRP-26JUL31-080|will-xrp-dip-to-0pt8-in-july-2026"
+  ],
+  "updated_at": "2026-07-30T05:24:30Z"
 }
