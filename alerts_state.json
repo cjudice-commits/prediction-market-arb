@@ -1,11 +1,10 @@
 {
   "active": [
+    "KXBTCMAXMON-BTC-26AUG31-7000000|will-bitcoin-reach-70k-in-august-2026",
     "KXBTCMINMON-BTC-26AUG31-5000000|will-bitcoin-dip-to-50k-in-august-2026",
     "KXBTCMINMON-BTC-26AUG31-6000000|will-bitcoin-dip-to-60k-in-august-2026",
     "KXETHMINMON-ETH-26AUG31-125000|will-ethereum-dip-to-1300-in-august-2026",
-    "KXHYPEMAXMON-HYPE-26AUG31-6750|will-hyperliquid-reach-68-in-august",
-    "KXHYPEMAXMON-HYPE-26AUG31-7000|will-hyperliquid-reach-72-in-august",
-    "KXXRPMAXMON-XRP-26AUG31-120|will-xrp-reach-1pt2-in-august-2026"
+    "KXHYPEMAXMON-HYPE-26AUG31-7000|will-hyperliquid-reach-72-in-august"
   ],
-  "updated_at": "2026-08-19T19:14:22Z"
+  "updated_at": "2026-08-19T19:19:18Z"
 }
