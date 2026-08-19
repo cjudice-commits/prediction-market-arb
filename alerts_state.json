@@ -1,8 +1,11 @@
 {
   "active": [
     "KXBTCMAXMON-BTC-26AUG31-7000000|will-bitcoin-reach-70k-in-august-2026",
+    "KXBTCMAXMON-BTC-26AUG31-7250000|will-bitcoin-reach-72pt5k-in-august-2026",
+    "KXETHMAXMON-ETH-26AUG31-300000|will-ethereum-reach-3000-in-august-2026",
+    "KXXRPMAXMON-XRP-26AUG31-140|will-xrp-reach-1pt4-in-august-2026",
     "KXXRPMINMON-XRP-26AUG31-050|will-xrp-dip-to-0pt6-in-august-2026",
     "KXXRPMINMON-XRP-26AUG31-060|will-xrp-dip-to-0pt6-in-august-2026"
   ],
-  "updated_at": "2026-08-19T21:49:15Z"
+  "updated_at": "2026-08-19T21:54:19Z"
 }
