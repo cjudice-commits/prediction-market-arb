@@ -2,7 +2,9 @@
   "active": [
     "KXBTCMINMON-BTC-26AUG31-6000000|will-bitcoin-dip-to-60k-in-august-2026",
     "KXETHMAXMON-ETH-26AUG31-300000|will-ethereum-reach-3000-in-august-2026",
-    "KXSOLMINMON-SOL-26AUG31-7000|will-solana-dip-to-70-in-august-2026"
+    "KXSOLMAXMON-SOL-26AUG31-11000|will-solana-reach-110-in-august-2026",
+    "KXSOLMINMON-SOL-26AUG31-7000|will-solana-dip-to-70-in-august-2026",
+    "KXXRPMAXMON-XRP-26AUG31-160|will-xrp-reach-1pt6-in-august-2026"
   ],
-  "updated_at": "2026-08-22T04:24:18Z"
+  "updated_at": "2026-08-22T04:29:18Z"
 }
