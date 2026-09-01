@@ -1,1000 +1,1104 @@
 [
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMAXMON-BTC-26AUG31-8250000",
+    "kalshi_ticker": "KXBTCMAXMON-BTC-26SEP30-9750000",
+    "kalshi_strike": 97500.0,
+    "poly_slug": "will-bitcoin-reach-97pt5k-in-september-2026",
+    "poly_strike": 97500.0,
+    "active": true
+  },
+  {
+    "asset": "BTC",
+    "kalshi_ticker": "KXBTCMAXMON-BTC-26SEP30-9500000",
+    "kalshi_strike": 95000.0,
+    "poly_slug": "will-bitcoin-reach-95k-in-september-2026",
+    "poly_strike": 95000.0,
+    "active": true
+  },
+  {
+    "asset": "BTC",
+    "kalshi_ticker": "KXBTCMAXMON-BTC-26SEP30-9250000",
+    "kalshi_strike": 92500.0,
+    "poly_slug": "will-bitcoin-reach-92pt5k-in-september-2026",
+    "poly_strike": 92500.0,
+    "active": true
+  },
+  {
+    "asset": "BTC",
+    "kalshi_ticker": "KXBTCMAXMON-BTC-26SEP30-9000000",
+    "kalshi_strike": 90000.0,
+    "poly_slug": "will-bitcoin-reach-90k-in-september-2026",
+    "poly_strike": 90000.0,
+    "active": true
+  },
+  {
+    "asset": "BTC",
+    "kalshi_ticker": "KXBTCMAXMON-BTC-26SEP30-8750000",
+    "kalshi_strike": 87500.0,
+    "poly_slug": "will-bitcoin-reach-87pt5k-in-september-2026",
+    "poly_strike": 87500.0,
+    "active": true
+  },
+  {
+    "asset": "BTC",
+    "kalshi_ticker": "KXBTCMAXMON-BTC-26SEP30-8500000",
+    "kalshi_strike": 85000.0,
+    "poly_slug": "will-bitcoin-reach-85k-in-september-2026",
+    "poly_strike": 85000.0,
+    "active": true
+  },
+  {
+    "asset": "BTC",
+    "kalshi_ticker": "KXBTCMAXMON-BTC-26SEP30-8250000",
     "kalshi_strike": 82500.0,
-    "poly_slug": "will-bitcoin-reach-82pt5k-in-august-2026",
+    "poly_slug": "will-bitcoin-reach-82pt5k-in-september-2026",
     "poly_strike": 82500.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMAXMON-BTC-26AUG31-8000000",
+    "kalshi_ticker": "KXBTCMAXMON-BTC-26SEP30-8000000",
     "kalshi_strike": 80000.0,
-    "poly_slug": "will-bitcoin-reach-80k-in-august-2026",
+    "poly_slug": "will-bitcoin-reach-80k-in-september-2026",
     "poly_strike": 80000.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMAXMON-BTC-26AUG31-7750000",
-    "kalshi_strike": 77500.0,
-    "poly_slug": "will-bitcoin-reach-77pt5k-in-august-2026",
-    "poly_strike": 77500.0,
-    "active": true
-  },
-  {
-    "asset": "BTC",
-    "kalshi_ticker": "KXBTCMAXMON-BTC-26AUG31-7500000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-7500000",
     "kalshi_strike": 75000.0,
-    "poly_slug": "will-bitcoin-reach-75k-in-august-2026",
+    "poly_slug": "will-bitcoin-dip-to-75k-in-september-2026",
     "poly_strike": 75000.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMAXMON-BTC-26AUG31-7250000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-7250000",
     "kalshi_strike": 72500.0,
-    "poly_slug": "will-bitcoin-reach-72pt5k-in-august-2026",
+    "poly_slug": "will-bitcoin-dip-to-72pt5k-in-september-2026",
     "poly_strike": 72500.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMAXMON-BTC-26AUG31-7000000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-7000000",
     "kalshi_strike": 70000.0,
-    "poly_slug": "will-bitcoin-reach-70k-in-august-2026",
+    "poly_slug": "will-bitcoin-dip-to-70k-in-september-2026",
     "poly_strike": 70000.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMAXMON-BTC-26AUG31-6750000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-6750000",
     "kalshi_strike": 67500.0,
-    "poly_slug": "will-bitcoin-reach-67pt5k-in-august-2026",
+    "poly_slug": "will-bitcoin-dip-to-67pt5k-in-september-2026",
     "poly_strike": 67500.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMAXMON-BTC-26AUG31-6500000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-6500000",
     "kalshi_strike": 65000.0,
-    "poly_slug": "will-bitcoin-reach-65k-in-august-2026",
+    "poly_slug": "will-bitcoin-dip-to-65k-in-september-2026",
     "poly_strike": 65000.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMINMON-BTC-26AUG31-6000000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-6250000",
+    "kalshi_strike": 62500.0,
+    "poly_slug": "will-bitcoin-dip-to-62pt5k-in-september-2026",
+    "poly_strike": 62500.0,
+    "active": true
+  },
+  {
+    "asset": "BTC",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-6000000",
     "kalshi_strike": 60000.0,
-    "poly_slug": "will-bitcoin-dip-to-60k-in-august-2026",
+    "poly_slug": "will-bitcoin-dip-to-60k-in-september-2026",
     "poly_strike": 60000.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMINMON-BTC-26AUG31-5750000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-5750000",
     "kalshi_strike": 57500.0,
-    "poly_slug": "will-bitcoin-dip-to-57pt5k-in-august-2026",
+    "poly_slug": "will-bitcoin-dip-to-57pt5k-in-september-2026",
     "poly_strike": 57500.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMINMON-BTC-26AUG31-5500000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-5500000",
     "kalshi_strike": 55000.0,
-    "poly_slug": "will-bitcoin-dip-to-55k-in-august-2026",
+    "poly_slug": "will-bitcoin-dip-to-55k-in-september-2026",
     "poly_strike": 55000.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMINMON-BTC-26AUG31-5250000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-5250000",
     "kalshi_strike": 52500.0,
-    "poly_slug": "will-bitcoin-dip-to-52pt5k-in-august-2026",
-    "poly_strike": 52500.0,
+    "poly_slug": "will-bitcoin-dip-to-55k-in-september-2026",
+    "poly_strike": 55000.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMINMON-BTC-26AUG31-5000000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-5000000",
     "kalshi_strike": 50000.0,
-    "poly_slug": "will-bitcoin-dip-to-50k-in-august-2026",
-    "poly_strike": 50000.0,
+    "poly_slug": "will-bitcoin-dip-to-55k-in-september-2026",
+    "poly_strike": 55000.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMINMON-BTC-26AUG31-4750000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-4750000",
     "kalshi_strike": 47500.0,
-    "poly_slug": "will-bitcoin-dip-to-47pt5k-in-august-2026",
-    "poly_strike": 47500.0,
+    "poly_slug": "will-bitcoin-dip-to-55k-in-september-2026",
+    "poly_strike": 55000.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMINMON-BTC-26AUG31-4500000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-4500000",
     "kalshi_strike": 45000.0,
-    "poly_slug": "will-bitcoin-dip-to-45k-in-august-2026",
-    "poly_strike": 45000.0,
+    "poly_slug": "will-bitcoin-dip-to-55k-in-september-2026",
+    "poly_strike": 55000.0,
     "active": true
   },
   {
     "asset": "BTC",
-    "kalshi_ticker": "KXBTCMINMON-BTC-26AUG31-4250000",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-4250000",
     "kalshi_strike": 42500.0,
-    "poly_slug": "will-bitcoin-dip-to-42pt5k-in-august-2026",
-    "poly_strike": 42500.0,
+    "poly_slug": "will-bitcoin-dip-to-55k-in-september-2026",
+    "poly_strike": 55000.0,
+    "active": true
+  },
+  {
+    "asset": "BTC",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-4000000",
+    "kalshi_strike": 40000.0,
+    "poly_slug": "will-bitcoin-dip-to-55k-in-september-2026",
+    "poly_strike": 55000.0,
+    "active": true
+  },
+  {
+    "asset": "BTC",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-3750000",
+    "kalshi_strike": 37500.0,
+    "poly_slug": "will-bitcoin-dip-to-55k-in-september-2026",
+    "poly_strike": 55000.0,
+    "active": true
+  },
+  {
+    "asset": "BTC",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-3500000",
+    "kalshi_strike": 35000.0,
+    "poly_slug": "will-bitcoin-dip-to-55k-in-september-2026",
+    "poly_strike": 55000.0,
+    "active": true
+  },
+  {
+    "asset": "BTC",
+    "kalshi_ticker": "KXBTCMINMON-BTC-26SEP30-3250000",
+    "kalshi_strike": 32500.0,
+    "poly_slug": "will-bitcoin-dip-to-55k-in-september-2026",
+    "poly_strike": 55000.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMAXMON-ETH-26AUG31-375000",
+    "kalshi_ticker": "KXETHMAXMON-ETH-26SEP30-425000",
+    "kalshi_strike": 4250.0,
+    "poly_slug": "will-ethereum-reach-4000-in-september-2026",
+    "poly_strike": 4000.0,
+    "active": true
+  },
+  {
+    "asset": "ETH",
+    "kalshi_ticker": "KXETHMAXMON-ETH-26SEP30-400000",
+    "kalshi_strike": 4000.0,
+    "poly_slug": "will-ethereum-reach-4000-in-september-2026",
+    "poly_strike": 4000.0,
+    "active": true
+  },
+  {
+    "asset": "ETH",
+    "kalshi_ticker": "KXETHMAXMON-ETH-26SEP30-375000",
     "kalshi_strike": 3750.0,
-    "poly_slug": "will-ethereum-reach-3000-in-august-2026",
-    "poly_strike": 3000.0,
+    "poly_slug": "will-ethereum-reach-4000-in-september-2026",
+    "poly_strike": 4000.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMAXMON-ETH-26AUG31-350000",
+    "kalshi_ticker": "KXETHMAXMON-ETH-26SEP30-350000",
     "kalshi_strike": 3500.0,
-    "poly_slug": "will-ethereum-reach-3000-in-august-2026",
-    "poly_strike": 3000.0,
+    "poly_slug": "will-ethereum-reach-3300-in-september-2026",
+    "poly_strike": 3300.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMAXMON-ETH-26AUG31-325000",
+    "kalshi_ticker": "KXETHMAXMON-ETH-26SEP30-325000",
     "kalshi_strike": 3250.0,
-    "poly_slug": "will-ethereum-reach-3000-in-august-2026",
-    "poly_strike": 3000.0,
+    "poly_slug": "will-ethereum-reach-3300-in-september-2026",
+    "poly_strike": 3300.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMAXMON-ETH-26AUG31-300000",
+    "kalshi_ticker": "KXETHMAXMON-ETH-26SEP30-300000",
     "kalshi_strike": 3000.0,
-    "poly_slug": "will-ethereum-reach-3000-in-august-2026",
+    "poly_slug": "will-ethereum-reach-3000-in-september-2026",
     "poly_strike": 3000.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMAXMON-ETH-26AUG31-275000",
+    "kalshi_ticker": "KXETHMAXMON-ETH-26SEP30-275000",
     "kalshi_strike": 2750.0,
-    "poly_slug": "will-ethereum-reach-2700-in-august-2026",
-    "poly_strike": 2700.0,
+    "poly_slug": "will-ethereum-reach-2800-in-september-2026",
+    "poly_strike": 2800.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMAXMON-ETH-26AUG31-250000",
+    "kalshi_ticker": "KXETHMAXMON-ETH-26SEP30-250000",
     "kalshi_strike": 2500.0,
-    "poly_slug": "will-ethereum-reach-2500-in-august-2026",
+    "poly_slug": "will-ethereum-reach-2500-in-september-2026",
     "poly_strike": 2500.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMAXMON-ETH-26AUG31-225000",
-    "kalshi_strike": 2250.0,
-    "poly_slug": "will-ethereum-reach-2300-in-august-2026",
-    "poly_strike": 2300.0,
-    "active": true
-  },
-  {
-    "asset": "ETH",
-    "kalshi_ticker": "KXETHMAXMON-ETH-26AUG31-200000",
+    "kalshi_ticker": "KXETHMINMON-ETH-26SEP30-200000",
     "kalshi_strike": 2000.0,
-    "poly_slug": "will-ethereum-reach-2000-in-august-2026",
+    "poly_slug": "will-ethereum-dip-to-2000-in-september-2026",
     "poly_strike": 2000.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMINMON-ETH-26AUG31-150000",
+    "kalshi_ticker": "KXETHMINMON-ETH-26SEP30-175000",
+    "kalshi_strike": 1750.0,
+    "poly_slug": "will-ethereum-dip-to-1800-in-september-2026",
+    "poly_strike": 1800.0,
+    "active": true
+  },
+  {
+    "asset": "ETH",
+    "kalshi_ticker": "KXETHMINMON-ETH-26SEP30-150000",
     "kalshi_strike": 1500.0,
-    "poly_slug": "will-ethereum-dip-to-1500-in-august-2026",
+    "poly_slug": "will-ethereum-dip-to-1500-in-september-2026",
     "poly_strike": 1500.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMINMON-ETH-26AUG31-125000",
+    "kalshi_ticker": "KXETHMINMON-ETH-26SEP30-125000",
     "kalshi_strike": 1250.0,
-    "poly_slug": "will-ethereum-dip-to-1300-in-august-2026",
-    "poly_strike": 1300.0,
+    "poly_slug": "will-ethereum-dip-to-1500-in-september-2026",
+    "poly_strike": 1500.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMINMON-ETH-26AUG31-100000",
+    "kalshi_ticker": "KXETHMINMON-ETH-26SEP30-100000",
     "kalshi_strike": 1000.0,
-    "poly_slug": "will-ethereum-dip-to-1000-in-august-2026",
-    "poly_strike": 1000.0,
+    "poly_slug": "will-ethereum-dip-to-1500-in-september-2026",
+    "poly_strike": 1500.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMINMON-ETH-26AUG31-75000",
+    "kalshi_ticker": "KXETHMINMON-ETH-26SEP30-75000",
     "kalshi_strike": 750.0,
-    "poly_slug": "will-ethereum-dip-to-900-in-august-2026",
-    "poly_strike": 900.0,
+    "poly_slug": "will-ethereum-dip-to-1500-in-september-2026",
+    "poly_strike": 1500.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMINMON-ETH-26AUG31-50000",
+    "kalshi_ticker": "KXETHMINMON-ETH-26SEP30-50000",
     "kalshi_strike": 500.0,
-    "poly_slug": "will-ethereum-dip-to-900-in-august-2026",
-    "poly_strike": 900.0,
+    "poly_slug": "will-ethereum-dip-to-1500-in-september-2026",
+    "poly_strike": 1500.0,
     "active": true
   },
   {
     "asset": "ETH",
-    "kalshi_ticker": "KXETHMINMON-ETH-26AUG31-25000",
+    "kalshi_ticker": "KXETHMINMON-ETH-26SEP30-25000",
     "kalshi_strike": 250.0,
-    "poly_slug": "will-ethereum-dip-to-900-in-august-2026",
-    "poly_strike": 900.0,
+    "poly_slug": "will-ethereum-dip-to-1500-in-september-2026",
+    "poly_strike": 1500.0,
     "active": true
   },
   {
     "asset": "SOL",
-    "kalshi_ticker": "KXSOLMAXMON-SOL-26AUG31-11500",
-    "kalshi_strike": 115.0,
-    "poly_slug": "will-solana-reach-120-in-august-2026",
+    "kalshi_ticker": "KXSOLMAXMON-SOL-26SEP30-14500",
+    "kalshi_strike": 145.0,
+    "poly_slug": "will-solana-reach-150-in-september-2026",
+    "poly_strike": 150.0,
+    "active": true
+  },
+  {
+    "asset": "SOL",
+    "kalshi_ticker": "KXSOLMAXMON-SOL-26SEP30-14000",
+    "kalshi_strike": 140.0,
+    "poly_slug": "will-solana-reach-140-in-september-2026",
+    "poly_strike": 140.0,
+    "active": true
+  },
+  {
+    "asset": "SOL",
+    "kalshi_ticker": "KXSOLMAXMON-SOL-26SEP30-13500",
+    "kalshi_strike": 135.0,
+    "poly_slug": "will-solana-reach-140-in-september-2026",
+    "poly_strike": 140.0,
+    "active": true
+  },
+  {
+    "asset": "SOL",
+    "kalshi_ticker": "KXSOLMAXMON-SOL-26SEP30-13000",
+    "kalshi_strike": 130.0,
+    "poly_slug": "will-solana-reach-130-in-september-2026",
+    "poly_strike": 130.0,
+    "active": true
+  },
+  {
+    "asset": "SOL",
+    "kalshi_ticker": "KXSOLMAXMON-SOL-26SEP30-12500",
+    "kalshi_strike": 125.0,
+    "poly_slug": "will-solana-reach-130-in-september-2026",
+    "poly_strike": 130.0,
+    "active": true
+  },
+  {
+    "asset": "SOL",
+    "kalshi_ticker": "KXSOLMAXMON-SOL-26SEP30-12000",
+    "kalshi_strike": 120.0,
+    "poly_slug": "will-solana-reach-120-in-september-2026",
     "poly_strike": 120.0,
     "active": true
   },
   {
     "asset": "SOL",
-    "kalshi_ticker": "KXSOLMAXMON-SOL-26AUG31-11000",
+    "kalshi_ticker": "KXSOLMAXMON-SOL-26SEP30-11500",
+    "kalshi_strike": 115.0,
+    "poly_slug": "will-solana-reach-120-in-september-2026",
+    "poly_strike": 120.0,
+    "active": true
+  },
+  {
+    "asset": "SOL",
+    "kalshi_ticker": "KXSOLMAXMON-SOL-26SEP30-11000",
     "kalshi_strike": 110.0,
-    "poly_slug": "will-solana-reach-110-in-august-2026",
+    "poly_slug": "will-solana-reach-110-in-september-2026",
     "poly_strike": 110.0,
     "active": true
   },
   {
     "asset": "SOL",
-    "kalshi_ticker": "KXSOLMAXMON-SOL-26AUG31-10500",
-    "kalshi_strike": 105.0,
-    "poly_slug": "will-solana-reach-110-in-august-2026",
-    "poly_strike": 110.0,
-    "active": true
-  },
-  {
-    "asset": "SOL",
-    "kalshi_ticker": "KXSOLMAXMON-SOL-26AUG31-10000",
+    "kalshi_ticker": "KXSOLMINMON-SOL-26SEP30-10000",
     "kalshi_strike": 100.0,
-    "poly_slug": "will-solana-reach-100-in-august-2026",
-    "poly_strike": 100.0,
+    "poly_slug": "will-solana-dip-to-90-in-september-2026",
+    "poly_strike": 90.0,
     "active": true
   },
   {
     "asset": "SOL",
-    "kalshi_ticker": "KXSOLMAXMON-SOL-26AUG31-9500",
+    "kalshi_ticker": "KXSOLMINMON-SOL-26SEP30-9500",
     "kalshi_strike": 95.0,
-    "poly_slug": "will-solana-reach-100-in-august-2026",
-    "poly_strike": 100.0,
+    "poly_slug": "will-solana-dip-to-90-in-september-2026",
+    "poly_strike": 90.0,
     "active": true
   },
   {
     "asset": "SOL",
-    "kalshi_ticker": "KXSOLMAXMON-SOL-26AUG31-9000",
+    "kalshi_ticker": "KXSOLMINMON-SOL-26SEP30-9000",
     "kalshi_strike": 90.0,
-    "poly_slug": "will-solana-reach-90-in-august-2026",
+    "poly_slug": "will-solana-dip-to-90-in-september-2026",
     "poly_strike": 90.0,
     "active": true
   },
   {
     "asset": "SOL",
-    "kalshi_ticker": "KXSOLMAXMON-SOL-26AUG31-8500",
+    "kalshi_ticker": "KXSOLMINMON-SOL-26SEP30-8500",
     "kalshi_strike": 85.0,
-    "poly_slug": "will-solana-reach-90-in-august-2026",
+    "poly_slug": "will-solana-dip-to-90-in-september-2026",
     "poly_strike": 90.0,
     "active": true
   },
   {
     "asset": "SOL",
-    "kalshi_ticker": "KXSOLMAXMON-SOL-26AUG31-8000",
+    "kalshi_ticker": "KXSOLMINMON-SOL-26SEP30-8000",
     "kalshi_strike": 80.0,
-    "poly_slug": "will-solana-reach-80-in-august-2026",
+    "poly_slug": "will-solana-dip-to-80-in-september-2026",
     "poly_strike": 80.0,
     "active": true
   },
   {
     "asset": "SOL",
-    "kalshi_ticker": "KXSOLMINMON-SOL-26AUG31-7000",
+    "kalshi_ticker": "KXSOLMINMON-SOL-26SEP30-7500",
+    "kalshi_strike": 75.0,
+    "poly_slug": "will-solana-dip-to-80-in-september-2026",
+    "poly_strike": 80.0,
+    "active": true
+  },
+  {
+    "asset": "SOL",
+    "kalshi_ticker": "KXSOLMINMON-SOL-26SEP30-7000",
     "kalshi_strike": 70.0,
-    "poly_slug": "will-solana-dip-to-70-in-august-2026",
+    "poly_slug": "will-solana-dip-to-70-in-september-2026",
     "poly_strike": 70.0,
     "active": true
   },
   {
     "asset": "SOL",
-    "kalshi_ticker": "KXSOLMINMON-SOL-26AUG31-6500",
+    "kalshi_ticker": "KXSOLMINMON-SOL-26SEP30-6500",
     "kalshi_strike": 65.0,
-    "poly_slug": "will-solana-dip-to-70-in-august-2026",
+    "poly_slug": "will-solana-dip-to-70-in-september-2026",
     "poly_strike": 70.0,
-    "active": true
-  },
-  {
-    "asset": "SOL",
-    "kalshi_ticker": "KXSOLMINMON-SOL-26AUG31-6000",
-    "kalshi_strike": 60.0,
-    "poly_slug": "will-solana-dip-to-60-in-august-2026",
-    "poly_strike": 60.0,
-    "active": true
-  },
-  {
-    "asset": "SOL",
-    "kalshi_ticker": "KXSOLMINMON-SOL-26AUG31-5500",
-    "kalshi_strike": 55.0,
-    "poly_slug": "will-solana-dip-to-60-in-august-2026",
-    "poly_strike": 60.0,
-    "active": true
-  },
-  {
-    "asset": "SOL",
-    "kalshi_ticker": "KXSOLMINMON-SOL-26AUG31-5000",
-    "kalshi_strike": 50.0,
-    "poly_slug": "will-solana-dip-to-50-in-august-2026",
-    "poly_strike": 50.0,
-    "active": true
-  },
-  {
-    "asset": "SOL",
-    "kalshi_ticker": "KXSOLMINMON-SOL-26AUG31-4500",
-    "kalshi_strike": 45.0,
-    "poly_slug": "will-solana-dip-to-50-in-august-2026",
-    "poly_strike": 50.0,
-    "active": true
-  },
-  {
-    "asset": "SOL",
-    "kalshi_ticker": "KXSOLMINMON-SOL-26AUG31-4000",
-    "kalshi_strike": 40.0,
-    "poly_slug": "will-solana-dip-to-40-in-august-2026",
-    "poly_strike": 40.0,
-    "active": true
-  },
-  {
-    "asset": "SOL",
-    "kalshi_ticker": "KXSOLMINMON-SOL-26AUG31-3500",
-    "kalshi_strike": 35.0,
-    "poly_slug": "will-solana-dip-to-40-in-august-2026",
-    "poly_strike": 40.0,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMAXMON-XRP-26AUG31-180",
-    "kalshi_strike": 1.8,
-    "poly_slug": "will-xrp-reach-1pt8-in-august-2026",
+    "kalshi_ticker": "KXXRPMAXMON-XRP-26SEP30-210",
+    "kalshi_strike": 2.1,
+    "poly_slug": "will-xrp-reach-2pt2-in-september-2026",
+    "poly_strike": 2.2,
+    "active": true
+  },
+  {
+    "asset": "XRP",
+    "kalshi_ticker": "KXXRPMAXMON-XRP-26SEP30-200",
+    "kalshi_strike": 2.0,
+    "poly_slug": "will-xrp-reach-2-in-september-2026",
+    "poly_strike": 2.0,
+    "active": true
+  },
+  {
+    "asset": "XRP",
+    "kalshi_ticker": "KXXRPMAXMON-XRP-26SEP30-190",
+    "kalshi_strike": 1.9,
+    "poly_slug": "will-xrp-reach-1pt8-in-september-2026",
     "poly_strike": 1.8,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMAXMON-XRP-26AUG31-170",
+    "kalshi_ticker": "KXXRPMAXMON-XRP-26SEP30-180",
+    "kalshi_strike": 1.8,
+    "poly_slug": "will-xrp-reach-1pt8-in-september-2026",
+    "poly_strike": 1.8,
+    "active": true
+  },
+  {
+    "asset": "XRP",
+    "kalshi_ticker": "KXXRPMAXMON-XRP-26SEP30-170",
     "kalshi_strike": 1.7,
-    "poly_slug": "will-xrp-reach-1pt6-in-august-2026",
+    "poly_slug": "will-xrp-reach-1pt6-in-september-2026",
     "poly_strike": 1.6,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMAXMON-XRP-26AUG31-160",
+    "kalshi_ticker": "KXXRPMAXMON-XRP-26SEP30-160",
     "kalshi_strike": 1.6,
-    "poly_slug": "will-xrp-reach-1pt6-in-august-2026",
+    "poly_slug": "will-xrp-reach-1pt6-in-september-2026",
     "poly_strike": 1.6,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMAXMON-XRP-26AUG31-150",
+    "kalshi_ticker": "KXXRPMAXMON-XRP-26SEP30-150",
     "kalshi_strike": 1.5,
-    "poly_slug": "will-xrp-reach-1pt6-in-august-2026",
+    "poly_slug": "will-xrp-reach-1pt6-in-september-2026",
     "poly_strike": 1.6,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMAXMON-XRP-26AUG31-140",
+    "kalshi_ticker": "KXXRPMAXMON-XRP-26SEP30-140",
     "kalshi_strike": 1.4,
-    "poly_slug": "will-xrp-reach-1pt4-in-august-2026",
+    "poly_slug": "will-xrp-reach-1pt4-in-september-2026",
     "poly_strike": 1.4,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMAXMON-XRP-26AUG31-130",
+    "kalshi_ticker": "KXXRPMINMON-XRP-26SEP30-130",
     "kalshi_strike": 1.3,
-    "poly_slug": "will-xrp-reach-1pt4-in-august-2026",
-    "poly_strike": 1.4,
+    "poly_slug": "will-xrp-dip-to-1pt2-in-september-2026",
+    "poly_strike": 1.2,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMAXMON-XRP-26AUG31-120",
+    "kalshi_ticker": "KXXRPMINMON-XRP-26SEP30-120",
     "kalshi_strike": 1.2,
-    "poly_slug": "will-xrp-reach-1pt2-in-august-2026",
+    "poly_slug": "will-xrp-dip-to-1pt2-in-september-2026",
     "poly_strike": 1.2,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMAXMON-XRP-26AUG31-110",
+    "kalshi_ticker": "KXXRPMINMON-XRP-26SEP30-110",
     "kalshi_strike": 1.1,
-    "poly_slug": "will-xrp-reach-1pt2-in-august-2026",
+    "poly_slug": "will-xrp-dip-to-1pt2-in-september-2026",
     "poly_strike": 1.2,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMINMON-XRP-26AUG31-100",
+    "kalshi_ticker": "KXXRPMINMON-XRP-26SEP30-100",
     "kalshi_strike": 1.0,
-    "poly_slug": "will-xrp-dip-to-1-in-august-2026",
+    "poly_slug": "will-xrp-dip-to-1-in-september-2026",
     "poly_strike": 1.0,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMINMON-XRP-26AUG31-090",
+    "kalshi_ticker": "KXXRPMINMON-XRP-26SEP30-090",
     "kalshi_strike": 0.9,
-    "poly_slug": "will-xrp-dip-to-1-in-august-2026",
+    "poly_slug": "will-xrp-dip-to-1-in-september-2026",
     "poly_strike": 1.0,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMINMON-XRP-26AUG31-080",
+    "kalshi_ticker": "KXXRPMINMON-XRP-26SEP30-080",
     "kalshi_strike": 0.8,
-    "poly_slug": "will-xrp-dip-to-0pt8-in-august-2026",
+    "poly_slug": "will-xrp-dip-to-0pt8-in-september-2026",
     "poly_strike": 0.8,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMINMON-XRP-26AUG31-070",
+    "kalshi_ticker": "KXXRPMINMON-XRP-26SEP30-070",
     "kalshi_strike": 0.7,
-    "poly_slug": "will-xrp-dip-to-0pt6-in-august-2026",
+    "poly_slug": "will-xrp-dip-to-0pt6-in-september-2026",
     "poly_strike": 0.6,
     "active": true
   },
   {
     "asset": "XRP",
-    "kalshi_ticker": "KXXRPMINMON-XRP-26AUG31-060",
+    "kalshi_ticker": "KXXRPMINMON-XRP-26SEP30-060",
     "kalshi_strike": 0.6,
-    "poly_slug": "will-xrp-dip-to-0pt6-in-august-2026",
+    "poly_slug": "will-xrp-dip-to-0pt6-in-september-2026",
     "poly_strike": 0.6,
-    "active": true
-  },
-  {
-    "asset": "XRP",
-    "kalshi_ticker": "KXXRPMINMON-XRP-26AUG31-050",
-    "kalshi_strike": 0.5,
-    "poly_slug": "will-xrp-dip-to-0pt6-in-august-2026",
-    "poly_strike": 0.6,
-    "active": true
-  },
-  {
-    "asset": "XRP",
-    "kalshi_ticker": "KXXRPMINMON-XRP-26AUG31-040",
-    "kalshi_strike": 0.4,
-    "poly_slug": "will-xrp-dip-to-0pt4-in-august-2026",
-    "poly_strike": 0.4,
-    "active": true
-  },
-  {
-    "asset": "XRP",
-    "kalshi_ticker": "KXXRPMINMON-XRP-26AUG31-030",
-    "kalshi_strike": 0.3,
-    "poly_slug": "will-xrp-dip-to-0pt2-in-august-2026",
-    "poly_strike": 0.2,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26AUG31-015",
+    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26SEP30-016",
+    "kalshi_strike": 0.16,
+    "poly_slug": "will-dogecoin-reach-0pt15-in-september-2026",
+    "poly_strike": 0.15,
+    "active": true
+  },
+  {
+    "asset": "DOGE",
+    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26SEP30-015",
     "kalshi_strike": 0.15,
-    "poly_slug": "will-dogecoin-reach-0pt15-in-august-2026",
+    "poly_slug": "will-dogecoin-reach-0pt15-in-september-2026",
     "poly_strike": 0.15,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26AUG31-014",
+    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26SEP30-014",
     "kalshi_strike": 0.14,
-    "poly_slug": "will-dogecoin-reach-0pt15-in-august-2026",
+    "poly_slug": "will-dogecoin-reach-0pt15-in-september-2026",
     "poly_strike": 0.15,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26AUG31-013",
+    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26SEP30-013",
     "kalshi_strike": 0.13,
-    "poly_slug": "will-dogecoin-reach-0pt15-in-august-2026",
+    "poly_slug": "will-dogecoin-reach-0pt15-in-september-2026",
     "poly_strike": 0.15,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26AUG31-012",
+    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26SEP30-012",
     "kalshi_strike": 0.12,
-    "poly_slug": "will-dogecoin-reach-0pt1-in-august-2026",
+    "poly_slug": "will-dogecoin-reach-0pt1-in-september-2026",
     "poly_strike": 0.1,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26AUG31-011",
+    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26SEP30-011",
     "kalshi_strike": 0.11,
-    "poly_slug": "will-dogecoin-reach-0pt1-in-august-2026",
+    "poly_slug": "will-dogecoin-reach-0pt1-in-september-2026",
     "poly_strike": 0.1,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26AUG31-010",
+    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26SEP30-010",
     "kalshi_strike": 0.1,
-    "poly_slug": "will-dogecoin-reach-0pt1-in-august-2026",
+    "poly_slug": "will-dogecoin-reach-0pt1-in-september-2026",
     "poly_strike": 0.1,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26AUG31-009",
+    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26SEP30-009",
     "kalshi_strike": 0.09,
-    "poly_slug": "will-dogecoin-reach-0pt1-in-august-2026",
+    "poly_slug": "will-dogecoin-reach-0pt1-in-september-2026",
     "poly_strike": 0.1,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMAXMON-DOGE-26AUG31-008",
+    "kalshi_ticker": "KXDOGEMINMON-DOGE-26SEP30-008",
     "kalshi_strike": 0.08,
-    "poly_slug": "will-dogecoin-reach-0pt1-in-august-2026",
-    "poly_strike": 0.1,
+    "poly_slug": "will-dogecoin-dip-to-0pt05-in-september-2026",
+    "poly_strike": 0.05,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMINMON-DOGE-26AUG31-007",
+    "kalshi_ticker": "KXDOGEMINMON-DOGE-26SEP30-007",
     "kalshi_strike": 0.07,
-    "poly_slug": "will-dogecoin-dip-to-0pt05-in-august-2026",
+    "poly_slug": "will-dogecoin-dip-to-0pt05-in-september-2026",
     "poly_strike": 0.05,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMINMON-DOGE-26AUG31-006",
+    "kalshi_ticker": "KXDOGEMINMON-DOGE-26SEP30-006",
     "kalshi_strike": 0.06,
-    "poly_slug": "will-dogecoin-dip-to-0pt05-in-august-2026",
+    "poly_slug": "will-dogecoin-dip-to-0pt05-in-september-2026",
     "poly_strike": 0.05,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMINMON-DOGE-26AUG31-005",
+    "kalshi_ticker": "KXDOGEMINMON-DOGE-26SEP30-005",
     "kalshi_strike": 0.05,
-    "poly_slug": "will-dogecoin-dip-to-0pt05-in-august-2026",
+    "poly_slug": "will-dogecoin-dip-to-0pt05-in-september-2026",
     "poly_strike": 0.05,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMINMON-DOGE-26AUG31-004",
+    "kalshi_ticker": "KXDOGEMINMON-DOGE-26SEP30-004",
     "kalshi_strike": 0.04,
-    "poly_slug": "will-dogecoin-dip-to-0pt05-in-august-2026",
+    "poly_slug": "will-dogecoin-dip-to-0pt05-in-september-2026",
     "poly_strike": 0.05,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMINMON-DOGE-26AUG31-003",
+    "kalshi_ticker": "KXDOGEMINMON-DOGE-26SEP30-003",
     "kalshi_strike": 0.03,
-    "poly_slug": "will-dogecoin-dip-to-0pt05-in-august-2026",
+    "poly_slug": "will-dogecoin-dip-to-0pt05-in-september-2026",
     "poly_strike": 0.05,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMINMON-DOGE-26AUG31-002",
+    "kalshi_ticker": "KXDOGEMINMON-DOGE-26SEP30-002",
     "kalshi_strike": 0.02,
-    "poly_slug": "will-dogecoin-dip-to-0pt05-in-august-2026",
+    "poly_slug": "will-dogecoin-dip-to-0pt05-in-september-2026",
     "poly_strike": 0.05,
     "active": true
   },
   {
     "asset": "DOGE",
-    "kalshi_ticker": "KXDOGEMINMON-DOGE-26AUG31-001",
+    "kalshi_ticker": "KXDOGEMINMON-DOGE-26SEP30-001",
     "kalshi_strike": 0.01,
-    "poly_slug": "will-dogecoin-dip-to-0pt05-in-august-2026",
+    "poly_slug": "will-dogecoin-dip-to-0pt05-in-september-2026",
     "poly_strike": 0.05,
     "active": true
   },
   {
     "asset": "BNB",
-    "kalshi_ticker": "KXBNBMAXMON-BNB-26AUG31-67000",
-    "kalshi_strike": 670.0,
-    "poly_slug": "will-bnb-reach-700-in-august",
+    "kalshi_ticker": "KXBNBMAXMON-BNB-26SEP30-77000",
+    "kalshi_strike": 770.0,
+    "poly_slug": "will-bnb-reach-800-in-september-2026",
+    "poly_strike": 800.0,
+    "active": true
+  },
+  {
+    "asset": "BNB",
+    "kalshi_ticker": "KXBNBMAXMON-BNB-26SEP30-76000",
+    "kalshi_strike": 760.0,
+    "poly_slug": "will-bnb-reach-800-in-september-2026",
+    "poly_strike": 800.0,
+    "active": true
+  },
+  {
+    "asset": "BNB",
+    "kalshi_ticker": "KXBNBMAXMON-BNB-26SEP30-75000",
+    "kalshi_strike": 750.0,
+    "poly_slug": "will-bnb-reach-800-in-september-2026",
+    "poly_strike": 800.0,
+    "active": true
+  },
+  {
+    "asset": "BNB",
+    "kalshi_ticker": "KXBNBMAXMON-BNB-26SEP30-74000",
+    "kalshi_strike": 740.0,
+    "poly_slug": "will-bnb-reach-700-in-september-2026",
     "poly_strike": 700.0,
     "active": true
   },
   {
     "asset": "BNB",
-    "kalshi_ticker": "KXBNBMAXMON-BNB-26AUG31-66000",
-    "kalshi_strike": 660.0,
-    "poly_slug": "will-bnb-reach-700-in-august",
+    "kalshi_ticker": "KXBNBMAXMON-BNB-26SEP30-73000",
+    "kalshi_strike": 730.0,
+    "poly_slug": "will-bnb-reach-700-in-september-2026",
     "poly_strike": 700.0,
     "active": true
   },
   {
     "asset": "BNB",
-    "kalshi_ticker": "KXBNBMAXMON-BNB-26AUG31-65000",
+    "kalshi_ticker": "KXBNBMAXMON-BNB-26SEP30-72000",
+    "kalshi_strike": 720.0,
+    "poly_slug": "will-bnb-reach-700-in-september-2026",
+    "poly_strike": 700.0,
+    "active": true
+  },
+  {
+    "asset": "BNB",
+    "kalshi_ticker": "KXBNBMAXMON-BNB-26SEP30-71000",
+    "kalshi_strike": 710.0,
+    "poly_slug": "will-bnb-reach-700-in-september-2026",
+    "poly_strike": 700.0,
+    "active": true
+  },
+  {
+    "asset": "BNB",
+    "kalshi_ticker": "KXBNBMAXMON-BNB-26SEP30-70000",
+    "kalshi_strike": 700.0,
+    "poly_slug": "will-bnb-reach-700-in-september-2026",
+    "poly_strike": 700.0,
+    "active": true
+  },
+  {
+    "asset": "BNB",
+    "kalshi_ticker": "KXBNBMINMON-BNB-26SEP30-65000",
     "kalshi_strike": 650.0,
-    "poly_slug": "will-bnb-reach-700-in-august",
-    "poly_strike": 700.0,
+    "poly_slug": "will-bnb-dip-to-600-in-september-2026",
+    "poly_strike": 600.0,
     "active": true
   },
   {
     "asset": "BNB",
-    "kalshi_ticker": "KXBNBMAXMON-BNB-26AUG31-64000",
+    "kalshi_ticker": "KXBNBMINMON-BNB-26SEP30-64000",
     "kalshi_strike": 640.0,
-    "poly_slug": "will-bnb-reach-600-in-august",
+    "poly_slug": "will-bnb-dip-to-600-in-september-2026",
     "poly_strike": 600.0,
     "active": true
   },
   {
     "asset": "BNB",
-    "kalshi_ticker": "KXBNBMAXMON-BNB-26AUG31-63000",
+    "kalshi_ticker": "KXBNBMINMON-BNB-26SEP30-63000",
     "kalshi_strike": 630.0,
-    "poly_slug": "will-bnb-reach-600-in-august",
+    "poly_slug": "will-bnb-dip-to-600-in-september-2026",
     "poly_strike": 600.0,
     "active": true
   },
   {
     "asset": "BNB",
-    "kalshi_ticker": "KXBNBMAXMON-BNB-26AUG31-62000",
+    "kalshi_ticker": "KXBNBMINMON-BNB-26SEP30-62000",
     "kalshi_strike": 620.0,
-    "poly_slug": "will-bnb-reach-600-in-august",
+    "poly_slug": "will-bnb-dip-to-600-in-september-2026",
     "poly_strike": 600.0,
     "active": true
   },
   {
     "asset": "BNB",
-    "kalshi_ticker": "KXBNBMAXMON-BNB-26AUG31-61000",
+    "kalshi_ticker": "KXBNBMINMON-BNB-26SEP30-61000",
     "kalshi_strike": 610.0,
-    "poly_slug": "will-bnb-reach-600-in-august",
+    "poly_slug": "will-bnb-dip-to-600-in-september-2026",
     "poly_strike": 600.0,
     "active": true
   },
   {
     "asset": "BNB",
-    "kalshi_ticker": "KXBNBMAXMON-BNB-26AUG31-60000",
+    "kalshi_ticker": "KXBNBMINMON-BNB-26SEP30-60000",
     "kalshi_strike": 600.0,
-    "poly_slug": "will-bnb-reach-600-in-august",
+    "poly_slug": "will-bnb-dip-to-600-in-september-2026",
     "poly_strike": 600.0,
     "active": true
   },
   {
     "asset": "BNB",
-    "kalshi_ticker": "KXBNBMINMON-BNB-26AUG31-55000",
-    "kalshi_strike": 550.0,
-    "poly_slug": "will-bnb-dip-to-500-in-august",
-    "poly_strike": 500.0,
+    "kalshi_ticker": "KXBNBMINMON-BNB-26SEP30-59000",
+    "kalshi_strike": 590.0,
+    "poly_slug": "will-bnb-dip-to-600-in-september-2026",
+    "poly_strike": 600.0,
     "active": true
   },
   {
     "asset": "BNB",
-    "kalshi_ticker": "KXBNBMINMON-BNB-26AUG31-54000",
-    "kalshi_strike": 540.0,
-    "poly_slug": "will-bnb-dip-to-500-in-august",
-    "poly_strike": 500.0,
-    "active": true
-  },
-  {
-    "asset": "BNB",
-    "kalshi_ticker": "KXBNBMINMON-BNB-26AUG31-53000",
-    "kalshi_strike": 530.0,
-    "poly_slug": "will-bnb-dip-to-500-in-august",
-    "poly_strike": 500.0,
-    "active": true
-  },
-  {
-    "asset": "BNB",
-    "kalshi_ticker": "KXBNBMINMON-BNB-26AUG31-52000",
-    "kalshi_strike": 520.0,
-    "poly_slug": "will-bnb-dip-to-500-in-august",
-    "poly_strike": 500.0,
-    "active": true
-  },
-  {
-    "asset": "BNB",
-    "kalshi_ticker": "KXBNBMINMON-BNB-26AUG31-51000",
-    "kalshi_strike": 510.0,
-    "poly_slug": "will-bnb-dip-to-500-in-august",
-    "poly_strike": 500.0,
-    "active": true
-  },
-  {
-    "asset": "BNB",
-    "kalshi_ticker": "KXBNBMINMON-BNB-26AUG31-50000",
-    "kalshi_strike": 500.0,
-    "poly_slug": "will-bnb-dip-to-500-in-august",
-    "poly_strike": 500.0,
-    "active": true
-  },
-  {
-    "asset": "BNB",
-    "kalshi_ticker": "KXBNBMINMON-BNB-26AUG31-49000",
-    "kalshi_strike": 490.0,
-    "poly_slug": "will-bnb-dip-to-500-in-august",
-    "poly_strike": 500.0,
-    "active": true
-  },
-  {
-    "asset": "BNB",
-    "kalshi_ticker": "KXBNBMINMON-BNB-26AUG31-48000",
-    "kalshi_strike": 480.0,
-    "poly_slug": "will-bnb-dip-to-500-in-august",
-    "poly_strike": 500.0,
+    "kalshi_ticker": "KXBNBMINMON-BNB-26SEP30-58000",
+    "kalshi_strike": 580.0,
+    "poly_slug": "will-bnb-dip-to-600-in-september-2026",
+    "poly_strike": 600.0,
     "active": true
   },
   {
     "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26AUG31-7250",
+    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26SEP30-10250",
+    "kalshi_strike": 102.5,
+    "poly_slug": "will-hyperliquid-reach-104-in-september-2026",
+    "poly_strike": 104.0,
+    "active": true
+  },
+  {
+    "asset": "HYPE",
+    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26SEP30-10000",
+    "kalshi_strike": 100.0,
+    "poly_slug": "will-hyperliquid-reach-100-in-september-2026",
+    "poly_strike": 100.0,
+    "active": true
+  },
+  {
+    "asset": "HYPE",
+    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26SEP30-9750",
+    "kalshi_strike": 97.5,
+    "poly_slug": "will-hyperliquid-reach-96-in-september-2026",
+    "poly_strike": 96.0,
+    "active": true
+  },
+  {
+    "asset": "HYPE",
+    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26SEP30-9500",
+    "kalshi_strike": 95.0,
+    "poly_slug": "will-hyperliquid-reach-96-in-september-2026",
+    "poly_strike": 96.0,
+    "active": true
+  },
+  {
+    "asset": "HYPE",
+    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26SEP30-9250",
+    "kalshi_strike": 92.5,
+    "poly_slug": "will-hyperliquid-reach-92-in-september-2026",
+    "poly_strike": 92.0,
+    "active": true
+  },
+  {
+    "asset": "HYPE",
+    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26SEP30-9000",
+    "kalshi_strike": 90.0,
+    "poly_slug": "will-hyperliquid-reach-92-in-september-2026",
+    "poly_strike": 92.0,
+    "active": true
+  },
+  {
+    "asset": "HYPE",
+    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26SEP30-8750",
+    "kalshi_strike": 87.5,
+    "poly_slug": "will-hyperliquid-reach-88-in-september-2026",
+    "poly_strike": 88.0,
+    "active": true
+  },
+  {
+    "asset": "HYPE",
+    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26SEP30-8500",
+    "kalshi_strike": 85.0,
+    "poly_slug": "will-hyperliquid-reach-84-in-september-2026",
+    "poly_strike": 84.0,
+    "active": true
+  },
+  {
+    "asset": "HYPE",
+    "kalshi_ticker": "KXHYPEMINMON-HYPE-26SEP30-8000",
+    "kalshi_strike": 80.0,
+    "poly_slug": "will-hyperliquid-dip-to-80-in-september-2026",
+    "poly_strike": 80.0,
+    "active": true
+  },
+  {
+    "asset": "HYPE",
+    "kalshi_ticker": "KXHYPEMINMON-HYPE-26SEP30-7750",
+    "kalshi_strike": 77.5,
+    "poly_slug": "will-hyperliquid-dip-to-76-in-september-2026",
+    "poly_strike": 76.0,
+    "active": true
+  },
+  {
+    "asset": "HYPE",
+    "kalshi_ticker": "KXHYPEMINMON-HYPE-26SEP30-7500",
+    "kalshi_strike": 75.0,
+    "poly_slug": "will-hyperliquid-dip-to-76-in-september-2026",
+    "poly_strike": 76.0,
+    "active": true
+  },
+  {
+    "asset": "HYPE",
+    "kalshi_ticker": "KXHYPEMINMON-HYPE-26SEP30-7250",
     "kalshi_strike": 72.5,
-    "poly_slug": "will-hyperliquid-reach-72-in-august",
+    "poly_slug": "will-hyperliquid-dip-to-72-in-september-2026",
     "poly_strike": 72.0,
     "active": true
   },
   {
     "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26AUG31-7000",
+    "kalshi_ticker": "KXHYPEMINMON-HYPE-26SEP30-7000",
     "kalshi_strike": 70.0,
-    "poly_slug": "will-hyperliquid-reach-72-in-august",
+    "poly_slug": "will-hyperliquid-dip-to-72-in-september-2026",
     "poly_strike": 72.0,
     "active": true
   },
   {
     "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26AUG31-6750",
+    "kalshi_ticker": "KXHYPEMINMON-HYPE-26SEP30-6750",
     "kalshi_strike": 67.5,
-    "poly_slug": "will-hyperliquid-reach-68-in-august",
+    "poly_slug": "will-hyperliquid-dip-to-68-in-september-2026",
     "poly_strike": 68.0,
     "active": true
   },
   {
     "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26AUG31-6500",
+    "kalshi_ticker": "KXHYPEMINMON-HYPE-26SEP30-6500",
     "kalshi_strike": 65.0,
-    "poly_slug": "will-hyperliquid-reach-64-in-august",
+    "poly_slug": "will-hyperliquid-dip-to-64-in-september-2026",
     "poly_strike": 64.0,
     "active": true
   },
   {
     "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26AUG31-6250",
+    "kalshi_ticker": "KXHYPEMINMON-HYPE-26SEP30-6250",
     "kalshi_strike": 62.5,
-    "poly_slug": "will-hyperliquid-reach-64-in-august",
+    "poly_slug": "will-hyperliquid-dip-to-64-in-september-2026",
     "poly_strike": 64.0,
     "active": true
   },
   {
-    "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26AUG31-6000",
-    "kalshi_strike": 60.0,
-    "poly_slug": "will-hyperliquid-reach-60-in-august",
-    "poly_strike": 60.0,
-    "active": true
-  },
-  {
-    "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26AUG31-5750",
-    "kalshi_strike": 57.5,
-    "poly_slug": "will-hyperliquid-reach-56-in-august",
-    "poly_strike": 56.0,
-    "active": true
-  },
-  {
-    "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMAXMON-HYPE-26AUG31-5500",
-    "kalshi_strike": 55.0,
-    "poly_slug": "will-hyperliquid-reach-56-in-august",
-    "poly_strike": 56.0,
-    "active": true
-  },
-  {
-    "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMINMON-HYPE-26AUG31-5000",
-    "kalshi_strike": 50.0,
-    "poly_slug": "will-hyperliquid-dip-to-48-in-august",
-    "poly_strike": 48.0,
-    "active": true
-  },
-  {
-    "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMINMON-HYPE-26AUG31-4750",
-    "kalshi_strike": 47.5,
-    "poly_slug": "will-hyperliquid-dip-to-48-in-august",
-    "poly_strike": 48.0,
-    "active": true
-  },
-  {
-    "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMINMON-HYPE-26AUG31-4500",
-    "kalshi_strike": 45.0,
-    "poly_slug": "will-hyperliquid-dip-to-44-in-august",
-    "poly_strike": 44.0,
-    "active": true
-  },
-  {
-    "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMINMON-HYPE-26AUG31-4250",
-    "kalshi_strike": 42.5,
-    "poly_slug": "will-hyperliquid-dip-to-44-in-august",
-    "poly_strike": 44.0,
-    "active": true
-  },
-  {
-    "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMINMON-HYPE-26AUG31-4000",
-    "kalshi_strike": 40.0,
-    "poly_slug": "will-hyperliquid-dip-to-40-in-august",
-    "poly_strike": 40.0,
-    "active": true
-  },
-  {
-    "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMINMON-HYPE-26AUG31-3750",
-    "kalshi_strike": 37.5,
-    "poly_slug": "will-hyperliquid-dip-to-36-in-august",
-    "poly_strike": 36.0,
-    "active": true
-  },
-  {
-    "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMINMON-HYPE-26AUG31-3500",
-    "kalshi_strike": 35.0,
-    "poly_slug": "will-hyperliquid-dip-to-36-in-august",
-    "poly_strike": 36.0,
-    "active": true
-  },
-  {
-    "asset": "HYPE",
-    "kalshi_ticker": "KXHYPEMINMON-HYPE-26AUG31-3250",
-    "kalshi_strike": 32.5,
-    "poly_slug": "will-hyperliquid-dip-to-36-in-august",
-    "poly_strike": 36.0,
-    "active": true
-  },
-  {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMAXMON-ZEC-26AUG31-54000",
-    "kalshi_strike": 540.0,
+    "kalshi_ticker": "KXZECMAXMON-ZEC-26SEP30-93000",
+    "kalshi_strike": 930.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMAXMON-ZEC-26AUG31-53000",
-    "kalshi_strike": 530.0,
+    "kalshi_ticker": "KXZECMAXMON-ZEC-26SEP30-92000",
+    "kalshi_strike": 920.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMAXMON-ZEC-26AUG31-52000",
-    "kalshi_strike": 520.0,
+    "kalshi_ticker": "KXZECMAXMON-ZEC-26SEP30-91000",
+    "kalshi_strike": 910.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMAXMON-ZEC-26AUG31-51000",
-    "kalshi_strike": 510.0,
+    "kalshi_ticker": "KXZECMAXMON-ZEC-26SEP30-90000",
+    "kalshi_strike": 900.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMAXMON-ZEC-26AUG31-50000",
-    "kalshi_strike": 500.0,
+    "kalshi_ticker": "KXZECMAXMON-ZEC-26SEP30-89000",
+    "kalshi_strike": 890.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMAXMON-ZEC-26AUG31-49000",
-    "kalshi_strike": 490.0,
+    "kalshi_ticker": "KXZECMAXMON-ZEC-26SEP30-88000",
+    "kalshi_strike": 880.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMAXMON-ZEC-26AUG31-48000",
-    "kalshi_strike": 480.0,
+    "kalshi_ticker": "KXZECMAXMON-ZEC-26SEP30-87000",
+    "kalshi_strike": 870.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMAXMON-ZEC-26AUG31-47000",
-    "kalshi_strike": 470.0,
+    "kalshi_ticker": "KXZECMAXMON-ZEC-26SEP30-86000",
+    "kalshi_strike": 860.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMINMON-ZEC-26AUG31-46000",
-    "kalshi_strike": 460.0,
+    "kalshi_ticker": "KXZECMINMON-ZEC-26SEP30-85000",
+    "kalshi_strike": 850.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMINMON-ZEC-26AUG31-45000",
-    "kalshi_strike": 450.0,
+    "kalshi_ticker": "KXZECMINMON-ZEC-26SEP30-84000",
+    "kalshi_strike": 840.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMINMON-ZEC-26AUG31-44000",
-    "kalshi_strike": 440.0,
+    "kalshi_ticker": "KXZECMINMON-ZEC-26SEP30-83000",
+    "kalshi_strike": 830.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMINMON-ZEC-26AUG31-43000",
-    "kalshi_strike": 430.0,
+    "kalshi_ticker": "KXZECMINMON-ZEC-26SEP30-82000",
+    "kalshi_strike": 820.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMINMON-ZEC-26AUG31-42000",
-    "kalshi_strike": 420.0,
+    "kalshi_ticker": "KXZECMINMON-ZEC-26SEP30-81000",
+    "kalshi_strike": 810.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMINMON-ZEC-26AUG31-41000",
-    "kalshi_strike": 410.0,
+    "kalshi_ticker": "KXZECMINMON-ZEC-26SEP30-80000",
+    "kalshi_strike": 800.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMINMON-ZEC-26AUG31-40000",
-    "kalshi_strike": 400.0,
+    "kalshi_ticker": "KXZECMINMON-ZEC-26SEP30-79000",
+    "kalshi_strike": 790.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
   },
   {
     "asset": "ZEC",
-    "kalshi_ticker": "KXZECMINMON-ZEC-26AUG31-39000",
-    "kalshi_strike": 390.0,
+    "kalshi_ticker": "KXZECMINMON-ZEC-26SEP30-78000",
+    "kalshi_strike": 780.0,
     "poly_slug": null,
     "poly_strike": null,
     "active": true
