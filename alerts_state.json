@@ -1,4 +1,9 @@
 {
-  "active": [],
-  "updated_at": "2026-09-03T12:49:14Z"
+  "active": [
+    "KXBTCMINMON-BTC-26SEP30-5750000|will-bitcoin-dip-to-57pt5k-in-september-2026",
+    "KXDOGEMAXMON-DOGE-26SEP30-015|will-dogecoin-reach-0pt15-in-september-2026",
+    "KXSOLMAXMON-SOL-26SEP30-14000|will-solana-reach-140-in-september-2026",
+    "KXXRPMAXMON-XRP-26SEP30-180|will-xrp-reach-1pt8-in-september-2026"
+  ],
+  "updated_at": "2026-09-03T12:54:27Z"
 }
