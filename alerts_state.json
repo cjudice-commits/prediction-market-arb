@@ -1,6 +1,8 @@
 {
   "active": [
-    "KXBTCMINMON-BTC-26SEP30-5750000|will-bitcoin-dip-to-57pt5k-in-september-2026"
+    "KXBTCMAXMON-BTC-26SEP30-9750000|will-bitcoin-reach-97pt5k-in-september-2026",
+    "KXBTCMINMON-BTC-26SEP30-5750000|will-bitcoin-dip-to-57pt5k-in-september-2026",
+    "KXSOLMINMON-SOL-26SEP30-9000|will-solana-dip-to-90-in-september-2026"
   ],
-  "updated_at": "2026-09-14T20:39:17Z"
+  "updated_at": "2026-09-14T20:44:18Z"
 }
