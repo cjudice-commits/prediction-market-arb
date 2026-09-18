@@ -1,4 +1,14 @@
 {
-  "active": [],
-  "updated_at": "2026-09-18T14:04:16Z"
+  "active": [
+    "KXBTCMAXMON-BTC-26SEP30-9750000|will-bitcoin-reach-97pt5k-in-september-2026",
+    "KXBTCMINMON-BTC-26SEP30-5000000|will-bitcoin-dip-to-55k-in-september-2026",
+    "KXBTCMINMON-BTC-26SEP30-5250000|will-bitcoin-dip-to-55k-in-september-2026",
+    "KXBTCMINMON-BTC-26SEP30-5500000|will-bitcoin-dip-to-55k-in-september-2026",
+    "KXBTCMINMON-BTC-26SEP30-5750000|will-bitcoin-dip-to-57pt5k-in-september-2026",
+    "KXBTCMINMON-BTC-26SEP30-7000000|will-bitcoin-dip-to-70k-in-september-2026",
+    "KXETHMAXMON-ETH-26SEP30-300000|will-ethereum-reach-3000-in-september-2026",
+    "KXETHMAXMON-ETH-26SEP30-425000|will-ethereum-reach-4000-in-september-2026",
+    "KXSOLMINMON-SOL-26SEP30-8000|will-solana-dip-to-80-in-september-2026"
+  ],
+  "updated_at": "2026-09-18T14:09:42Z"
 }
