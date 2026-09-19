@@ -1,11 +1,9 @@
 {
   "active": [
-    "KXBTCMAXMON-BTC-26SEP30-9500000|will-bitcoin-reach-95k-in-september-2026",
     "KXBTCMINMON-BTC-26SEP30-5500000|will-bitcoin-dip-to-55k-in-september-2026",
     "KXBTCMINMON-BTC-26SEP30-6000000|will-bitcoin-dip-to-60k-in-september-2026",
     "KXBTCMINMON-BTC-26SEP30-6250000|will-bitcoin-dip-to-62pt5k-in-september-2026",
-    "KXETHMAXMON-ETH-26SEP30-425000|will-ethereum-reach-4000-in-september-2026",
-    "KXETHMINMON-ETH-26SEP30-175000|will-ethereum-dip-to-1800-in-september-2026"
+    "KXETHMAXMON-ETH-26SEP30-425000|will-ethereum-reach-4000-in-september-2026"
   ],
-  "updated_at": "2026-09-19T14:09:36Z"
+  "updated_at": "2026-09-19T14:14:14Z"
 }
