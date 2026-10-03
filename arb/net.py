@@ -1,5 +1,6 @@
 """Tiny stdlib HTTP JSON helpers + a bounded thread pool for fan-out fetches."""
 import json
+import os
 import time
 import urllib.request
 import urllib.error
@@ -9,6 +10,10 @@ _HEADERS = {
     "User-Agent": "Mozilla/5.0 (prediction-market-arb)",
     "Accept": "application/json",
 }
+
+# Kalshi API host. Set ARB_KALSHI_HOST to the demo sandbox
+# (https://external-api.demo.kalshi.co) to trade play money; default = production.
+KALSHI_HOST = os.environ.get("ARB_KALSHI_HOST", "https://api.elections.kalshi.com")
 
 
 class FetchError(Exception):
