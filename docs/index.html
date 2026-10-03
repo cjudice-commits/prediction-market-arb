@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260530b">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="aurora"></div>
@@ -26,6 +26,7 @@
   </div>
   <div class="actions">
     <div class="live"><span class="dot"></span><span id="meta">connecting…</span></div>
+    <label class="auto"><input type="checkbox" id="auto"><span>Auto&nbsp;8s</span></label>
     <button id="refresh" class="primary"><span class="bspin"></span><span class="blabel">Refresh</span></button>
   </div>
 </header>
@@ -52,16 +53,10 @@
     <svg viewBox="0 0 24 24" width="15" height="15"><path d="M21 21l-4.3-4.3M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     <input type="search" id="search" placeholder="Search asset, ticker, market…">
   </div>
-  <div id="assetChips" class="chips"></div>
   <div class="seg" id="statusSeg">
     <button data-s="" class="on">All</button>
     <button data-s="ARB">Arb</button>
-    <button data-s="NO ARB">No&nbsp;arb</button>
-    <button data-s="NO POLY">No&nbsp;Poly</button>
-    <button data-s="BAD BASIS">Bad&nbsp;basis</button>
-    <button data-s="LOW SIZE">Low&nbsp;size</button>
   </div>
-  <label class="chk"><input type="checkbox" id="favOnly"><span>Favorable&nbsp;basis</span></label>
   <span class="count" id="rowCount"></span>
 </section>
 
@@ -77,9 +72,26 @@
 </main>
 
 
+
+
+
+<div id="assignModal" class="modal" hidden>
+  <div class="card asg-card">
+    <div class="tk-top">
+      <h2 id="asgTitle">Assign lots</h2>
+      <button id="asgClose" class="ghost tk-x" aria-label="Close">✕</button>
+    </div>
+    <p class="hint" id="asgHint"></p>
+    <div id="asgBody"></div>
+    <div class="tk-foot">
+      <button id="asgSave" class="primary">Save assignments</button>
+      <button id="asgReset" class="ghost">Reset to auto (FIFO)</button>
+      <button id="asgCancel" class="ghost">Cancel</button>
+    </div>
+  </div>
 </div>
 
 <div id="toast" class="toast" hidden></div>
-<script src="app.js?v=20260530b"></script>
+<script src="app.js"></script>
 </body>
 </html>

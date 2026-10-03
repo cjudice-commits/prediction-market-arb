@@ -32,6 +32,9 @@ body {
 /* ---------- header ---------- */
 header {
   display: flex; justify-content: space-between; align-items: center;
+  /* Wrap rather than push the page wider: the brand + tabs + actions row needs
+     ~1046px, so below that it was forcing a horizontal page scroll. */
+  flex-wrap: wrap; row-gap: 10px;
   padding: 18px 26px; position: sticky; top: 0; z-index: 20;
   background: linear-gradient(180deg, rgba(10,12,20,.92), rgba(10,12,20,.6));
   backdrop-filter: blur(14px); border-bottom: 1px solid var(--line);
@@ -156,6 +159,21 @@ button:disabled { opacity: .55; cursor: default; transform: none; }
 .hcard .meta { display: flex; gap: 16px; margin-top: 8px; color: var(--dim);
   font-size: 12px; }
 .hcard .meta b { color: var(--txt); font-weight: 600; }
+/* Hero card split: top-of-book row vs full-sweep row */
+.hcard .hsplit { display: grid; gap: 10px; }
+.hcard .hrow.sweep { border-top: 1px solid var(--line); padding-top: 10px; }
+.hcard .hlbl { font-size: 10px; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--faint); font-weight: 600; margin-bottom: 2px; }
+.hcard .hnum { display: flex; align-items: baseline; gap: 8px; }
+.hcard .hsplit .ret { font-size: 23px; }
+.hcard .hsub { font-size: 11.5px; color: var(--dim); font-weight: 600; }
+.hcard .hrow.sweep .ret { color: var(--dim); }
+.hcard .hrow.sweep .meta b { color: var(--good); }
+.hcard .hnone { font-size: 11.5px; color: var(--faint); padding: 5px 0 2px; }
+.hcard .hsplit .meta { margin-top: 5px; gap: 13px; }
+.hcard .hfoot { margin-top: 11px; padding-top: 9px;
+  border-top: 1px solid var(--line); font-size: 12px; color: var(--dim); }
+
 .hcard.spec { background: linear-gradient(150deg, rgba(255,194,75,.12),
   var(--panel) 55%); }
 .hcard.spec:hover { border-color: var(--warn); }
@@ -178,16 +196,6 @@ button:disabled { opacity: .55; cursor: default; transform: none; }
   font: inherit; outline: none;
 }
 .search input:focus { border-color: var(--accent); }
-.chips { display: flex; gap: 7px; flex-wrap: wrap; }
-.chips .ac {
-  display: flex; align-items: center; gap: 6px; padding: 6px 12px;
-  border-radius: 999px; border: 1px solid var(--line2); background: var(--panel);
-  color: var(--dim); font-size: 12px; font-weight: 600; cursor: pointer;
-  transition: .14s;
-}
-.chips .ac .blob { width: 8px; height: 8px; border-radius: 50%; }
-.chips .ac.on { color: #fff; border-color: transparent;
-  background: rgba(255,255,255,.10); }
 .seg { display: flex; background: var(--panel); border: 1px solid var(--line2);
   border-radius: 999px; padding: 3px; }
 .seg button { background: transparent; color: var(--dim); padding: 6px 13px;
@@ -222,6 +230,11 @@ tbody td.l { text-align: left; }
 tbody tr.r { cursor: pointer; transition: background .12s; }
 tbody tr.r:hover { background: rgba(255,255,255,.035); }
 tbody tr.r.open { background: rgba(108,140,255,.07); }
+/* favorable-basis arb (guaranteed arb + double-win strike gap) — gold "bonus" row */
+tbody tr.r.arb-fav { background: rgba(255,194,75,.10);
+  box-shadow: inset 3px 0 0 0 var(--warn); }
+tbody tr.r.arb-fav:hover,
+tbody tr.r.arb-fav.open { background: rgba(255,194,75,.17); }
 
 .mkt { display: flex; align-items: center; gap: 11px; max-width: 360px; }
 .thumb, .badge {
@@ -267,7 +280,7 @@ tbody tr.r.open { background: rgba(108,140,255,.07); }
 
 /* ---------- detail drawer ---------- */
 tr.detail td { padding: 0; border-bottom: 1px solid var(--line); }
-.drawer { display: grid; grid-template-columns: 1fr 1fr 1.1fr; gap: 18px;
+.drawer { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 18px;
   padding: 20px 22px; background: linear-gradient(180deg,
     rgba(108,140,255,.06), transparent); animation: slide .22s ease; }
 @keyframes slide { from { opacity: 0; transform: translateY(-6px); } }
@@ -279,6 +292,12 @@ tr.detail td { padding: 0; border-bottom: 1px solid var(--line); }
 .vcard h4 .tag { font-size: 10px; padding: 2px 7px; border-radius: 5px;
   color: #fff; font-weight: 700; }
 .tag.k { background: #5b6cff; } .tag.p { background: #00c2a8; }
+.tag.i { background: #e08b3c; }
+.expb { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+  text-transform: uppercase; letter-spacing: .3px; white-space: nowrap; }
+.expb.won { background: #16c78422; color: #16c784; }
+.expb.lost { background: #ef535022; color: #ef5350; }
+.expb.pend { background: #e0a93b22; color: #e0a93b; }
 .vcard .title { font-weight: 600; font-size: 13px; line-height: 1.4;
   margin-bottom: 10px; }
 .vcard img.hero-img { width: 100%; max-height: 120px; object-fit: cover;
@@ -318,6 +337,100 @@ tr.detail td { padding: 0; border-bottom: 1px solid var(--line); }
 .modal input { width: 120px; background: var(--bg2); border: 1px solid var(--line2);
   color: var(--txt); border-radius: 8px; padding: 7px 10px; font: inherit; }
 .modal input:focus { outline: none; border-color: var(--accent); }
+
+/* ---- Order-book depth walk (monthly scanner detail drawer) ---- */
+.depth { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+.depth-h { font-size: 12px; color: var(--dim); margin-bottom: 8px; }
+.depth-t { width: 100%; border-collapse: collapse; font-size: 12px;
+  font-variant-numeric: tabular-nums; }
+.depth-t th { color: var(--faint); font-weight: 500; text-align: right;
+  padding: 3px 0 5px; font-size: 11px; text-transform: uppercase;
+  letter-spacing: .05em; }
+.depth-t th:first-child, .depth-t td:first-child { text-align: left; }
+.depth-t td { text-align: right; padding: 3px 0; }
+.depth-t tr + tr td { border-top: 1px solid var(--line); }
+.depth-f { color: var(--faint); font-size: 11.5px; margin-top: 8px;
+  line-height: 1.5; }
+
+/* ---- Prepare-trade button + preview ticket (read-only) ---- */
+.prep-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.prep-btn { background: linear-gradient(180deg, var(--accent), #4d63d8);
+  color: #fff; border: none; border-radius: 9px; padding: 8px 14px;
+  font: 600 13px/1 "Inter", sans-serif; cursor: pointer; letter-spacing: .01em; }
+.prep-btn:hover { filter: brightness(1.08); }
+.prep-hint { color: var(--faint); font-size: 11.5px; }
+
+.modal .tk-card { width: 472px; max-width: 94vw; }
+.tk-top { display: flex; align-items: center; justify-content: space-between; }
+.tk-top h2 { display: flex; align-items: center; gap: 9px; }
+.tk-badge { font: 700 10px/1 "Inter", sans-serif; letter-spacing: .08em;
+  color: #e0a93b; background: #e0a93b22; border: 1px solid #e0a93b55;
+  padding: 4px 7px; border-radius: 6px; }
+.tk-x { padding: 4px 9px; font-size: 14px; }
+.tk-banner { background: #e0a93b14; border: 1px solid #e0a93b33; color: var(--dim);
+  border-radius: 9px; padding: 9px 11px; font-size: 12px; margin: 12px 0 14px; }
+.tk-banner b { color: var(--txt); }
+.tk-head { display: flex; align-items: center; gap: 10px; font-size: 12px;
+  margin-bottom: 10px; }
+.tk-orders { display: flex; flex-direction: column; gap: 7px; }
+.tk-order { display: flex; align-items: center; gap: 9px; padding: 9px 11px;
+  background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; }
+.tk-buy { font-weight: 700; font-size: 11px; letter-spacing: .05em; color: var(--dim); }
+.tk-sz { font-family: "JetBrains Mono", monospace; font-size: 12.5px; }
+.tk-px { margin-left: auto; font-family: "JetBrains Mono", monospace; font-size: 12px; }
+.tk-cost { min-width: 78px; text-align: right; font-family: "JetBrains Mono", monospace;
+  font-weight: 600; }
+.tk-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px;
+  margin: 14px 0 4px; }
+.tk-stat { display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; font-size: 12.5px; border-bottom: 1px dashed var(--line); padding: 5px 0; }
+.tk-stat > span { color: var(--dim); }
+.tk-stat > b { font-family: "JetBrains Mono", monospace; font-weight: 600; }
+.tk-warn { margin: 12px 0 2px; padding-left: 18px; color: #e0a93b;
+  font-size: 12px; line-height: 1.5; }
+.tk-controls { display: flex; gap: 16px; margin: 16px 0 6px; }
+.tk-controls label { flex: 1; display: flex; flex-direction: column; gap: 5px;
+  font-size: 12px; color: var(--dim); }
+.tk-controls input { width: 100%; background: var(--bg2); border: 1px solid var(--line2);
+  color: var(--txt); border-radius: 8px; padding: 7px 9px; font-size: 13px; }
+.tk-controls input:focus { outline: none; border-color: var(--accent); }
+.tk-foot { display: flex; flex-direction: column; gap: 7px; margin-top: 14px;
+  padding-top: 14px; border-top: 1px solid var(--line); }
+.tk-confirm[disabled] { opacity: .5; cursor: not-allowed;
+  background: var(--bg2); color: var(--dim); border: 1px solid var(--line2); }
+/* live (real-money) Confirm + Place buttons */
+.tk-live { color: #fff; background: linear-gradient(135deg, #ff647c, #c0392b);
+  box-shadow: 0 8px 22px -10px var(--bad); display: inline-flex;
+  align-items: center; justify-content: center; gap: 8px; }
+.tk-live:hover:not([disabled]) { transform: translateY(-1px); filter: brightness(1.08); }
+.tk-live[disabled] { opacity: .45; cursor: not-allowed; box-shadow: none;
+  filter: grayscale(.5); }
+/* Poly hedge button (second leg) — violet accent to distinguish from Kalshi-live red */
+.tk-poly { border: 1px solid var(--accent2); color: #d9c2ff; }
+.tk-poly:hover:not([disabled]) { background: #b06cff1a; color: #fff; }
+/* Poly confirmation panel variant */
+.tk-live-panel.poly { border-color: var(--accent2); background: #b06cff14; }
+.tk-live-panel.poly .tk-live-hd { color: var(--accent2); }
+/* live confirmation panel (rendered into #tkExec by liveConfirm) */
+.tk-live-panel { border: 1px solid var(--bad); background: var(--bad-d);
+  border-radius: 10px; padding: 12px; }
+.tk-live-panel.demo { border-color: var(--info); background: #0e2530; }
+.tk-live-hd { font-weight: 800; letter-spacing: .3px; margin-bottom: 8px;
+  color: var(--bad); }
+.tk-live-panel.demo .tk-live-hd { color: var(--info); }
+.tk-live-confirm { display: flex; gap: 8px; margin-top: 11px; }
+.tk-live-confirm input { flex: 1; background: var(--bg2); border: 1px solid var(--line2);
+  color: var(--txt); border-radius: 8px; padding: 8px 10px; font-size: 13px;
+  letter-spacing: 2px; text-transform: uppercase; }
+.tk-live-confirm input:focus { outline: none; border-color: var(--bad); }
+.tk-banner.placed { background: var(--good-d); border-color: var(--good); }
+.tk-banner.placed b { color: var(--good); }
+.tk-banner.failed { background: var(--bad-d); border-color: var(--bad); }
+.tk-banner.failed b { color: var(--bad); }
+.tk-foot-note { color: var(--faint); font-size: 11px; text-align: center; }
+.tk-load, .tk-err { padding: 22px 6px; text-align: center; color: var(--dim);
+  font-size: 13px; }
+.tk-err { color: var(--bad); }
 .modal .row { display: flex; gap: 10px; margin-top: 20px; }
 .modal .row button { flex: 1; }
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
@@ -360,20 +473,88 @@ tr.detail td { padding: 0; border-bottom: 1px solid var(--line); }
 .ptbl td.l { text-align: left; }
 .ptbl tr:hover td { background: rgba(255,255,255,.03); }
 .ptbl .mkt .q { max-width: 340px; }
+/* The paired table runs 10 columns. Scroll it inside its own card instead of
+   letting the PAGE scroll sideways (body overflow was hitting 1578px).
+   BUT an overflow container changes what `position: sticky` sticks to, and
+   .ptbl th is sticky at top:79px so it pins under the page header. Inside a
+   scroll box it pinned 79px from the CARD top instead — i.e. underneath the
+   first data row. So only become a scroll container at widths where the table
+   genuinely doesn't fit, and drop the offset to 0 there so the header still
+   renders in the right place. */
+@media (max-width: 1279px) {
+  .ptbl-wrap { overflow-x: auto; }
+  .ptbl-wrap .ptbl th { top: 0; }
+}
+/* Poly slugs are ~45 chars of boilerplate and were eating 488px of table width
+   on their own. Truncate on screen; the full ref stays on the title tooltip. */
+.leg2 .ref { max-width: 150px; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; }
+.ptbl .gu-ann { display: block; line-height: 1.3; }
+/* 10 columns need every pixel — trim the generous default cell padding so the
+   table fits a 1280px window outright rather than scrolling inside its card. */
+.ptbl-wrap .ptbl th, .ptbl-wrap .ptbl td { padding-left: 7px; padding-right: 7px; }
+.ptbl-wrap .ptbl td { padding-top: 8px; padding-bottom: 8px; }
 .ptbl .pp { color: var(--faint); font-size: 11px; font-weight: 600; }
 .sidetag { font-size: 10px; font-weight: 800; padding: 2px 8px;
   border-radius: 6px; text-transform: uppercase; letter-spacing: .03em; }
-.sidetag.yes, .sidetag.up { color: var(--good); background: var(--good-d); }
-.sidetag.no, .sidetag.down { color: var(--bad); background: var(--bad-d); }
+.sidetag.yes, .sidetag.up, .sidetag.won { color: var(--good); background: var(--good-d); }
+.sidetag.no, .sidetag.down, .sidetag.lost { color: var(--bad); background: var(--bad-d); }
 .okpill { font-size: 10px; font-weight: 700; color: var(--good);
   background: var(--good-d); padding: 2px 8px; border-radius: 999px;
   margin-left: 6px; }
 .onepill { font-size: 10px; font-weight: 700; color: var(--warn);
   background: var(--warn-d); padding: 2px 8px; border-radius: 999px;
   margin-left: 6px; }
+.kindpill { font-size: 10px; font-weight: 800; padding: 2px 8px;
+  border-radius: 999px; letter-spacing: .02em; }
+.pairmeta { display: flex; align-items: center; gap: 7px; margin-top: 4px; }
+.pairnote { font-size: 10.5px; margin-top: 3px; max-width: 230px;
+  line-height: 1.3; }
 .leg2 { display: flex; align-items: center; gap: 8px; padding: 3px 0;
   font-size: 12px; }
 .leg2 .tag { width: 16px; height: 16px; display: grid; place-items: center;
   font-size: 9px; padding: 0; }
+
+/* ---------- pair-assignment (split-leg lot attribution) ---------- */
+.asg-banner { display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: var(--warn-d); border: 1px solid rgba(255,194,75,.35);
+  border-radius: var(--r); padding: 12px 14px; margin-bottom: 14px; }
+.asg-ico { font-size: 20px; color: var(--warn); }
+.asg-txt { font-size: 13px; flex: 1 1 260px; }
+.asg-txt b { color: var(--warn); }
+.asg-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.asg-chip { display: inline-flex; align-items: center; gap: 6px;
+  background: var(--panel-solid); border: 1px solid var(--line2);
+  border-radius: 10px; padding: 6px 10px; font-size: 12px; color: var(--txt);
+  cursor: pointer; }
+.asg-chip:hover { border-color: var(--warn); }
+.asg-mkt { max-width: 190px; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; }
+.asg-go { color: var(--warn); font-weight: 700; }
+.unconf { font-size: 10px; font-weight: 700; padding: 1px 7px;
+  border-radius: 999px; background: rgba(255,194,75,.14); color: var(--warn);
+  border: 1px solid rgba(255,194,75,.3); cursor: pointer; }
+.unconf:hover { background: rgba(255,194,75,.24); }
+.modal .asg-card { width: 560px; max-width: 95vw; }
+/* Keep title + footer in view; scroll the lot list when a leg has many fills.
+   scroll-padding-top keeps a focused/scrolled row clear of the sticky header. */
+.asg-card #asgBody { max-height: 52vh; overflow-y: auto; margin: 0 -2px;
+  padding: 0 2px; scroll-padding-top: 34px; }
+.asg-pairs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.asg-pair { display: flex; align-items: center; gap: 6px; font-size: 12px;
+  background: var(--bg2); border: 1px solid var(--line2);
+  border-radius: 10px; padding: 6px 10px; }
+/* separate (not collapse) so the sticky header actually sticks in Chrome */
+.asg-tbl { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+.asg-tbl th, .asg-tbl td { padding: 7px 8px;
+  border-bottom: 1px solid var(--line); text-align: right; }
+.asg-tbl th.l, .asg-tbl td.l { text-align: left; }
+.asg-tbl thead th { color: var(--dim); font-weight: 600; font-size: 11px;
+  position: sticky; top: 0; z-index: 2; background: var(--panel-solid);
+  box-shadow: inset 0 -1px 0 var(--line); }
+.asg-sel { background: var(--bg2); color: var(--txt);
+  border: 1px solid var(--line2); border-radius: 8px; padding: 4px 8px;
+  font: inherit; cursor: pointer; }
+.asg-sel:focus { outline: none; border-color: var(--accent); }
 
 @media (max-width: 1100px) { .drawer { grid-template-columns: 1fr; } }

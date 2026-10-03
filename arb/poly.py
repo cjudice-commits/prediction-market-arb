@@ -57,36 +57,49 @@ def _parse_meta(m):
     }
 
 
-def _best_ask(book):
-    """Lowest-price ask level -> (price, size). Order-agnostic."""
-    best = None
+def _ask_ladder(book):
+    """Every ask level as [(price, size), ...], ascending by price (best first).
+
+    The CLOB already returns the whole book; keeping all of it (rather than just
+    the min-price level) is what lets the scanner size an arb by walking back
+    through the book. Thin crypto pairs routinely have a 10-lot top of book with
+    real size one or two levels behind it.
+    """
+    out = []
     for lvl in (book or {}).get("asks") or []:
         try:
             p = float(lvl["price"])
             s = float(lvl["size"])
         except (TypeError, ValueError, KeyError):
             continue
-        if best is None or p < best[0]:
-            best = (p, s)
-    return best
+        if s > 0:
+            out.append((p, s))
+    out.sort(key=lambda x: x[0])
+    return out
 
 
-def _best_bid(book):
-    """Highest-price bid level -> price (what you could sell into now)."""
-    best = None
+def _bid_ladder(book):
+    """Every bid level as [(price, size), ...] DESCENDING by price (best first) —
+    what you could sell into, level by level. A position larger than the best bid
+    walks down this ladder at progressively worse prices."""
+    out = []
     for lvl in (book or {}).get("bids") or []:
         try:
             p = float(lvl["price"])
+            s = float(lvl["size"])
         except (TypeError, ValueError, KeyError):
             continue
-        if best is None or p > best:
-            best = p
-    return best
+        if s > 0:
+            out.append((p, s))
+    out.sort(key=lambda x: -x[0])
+    return out
 
 
 def fetch_token_bids(token_ids):
-    """Batched CLOB books -> {token_id: best_bid_price}. For valuing held
-    positions at the executable exit price (not last/mid)."""
+    """Batched CLOB books -> {token_id: [(price, size), ...]} — the full bid
+    ladder, best first. The top level marks a held position at its executable
+    exit price (not last/mid); the rest is what an exit larger than the best bid
+    would actually have to walk through."""
     ids = [str(t) for t in dict.fromkeys(token_ids) if t]
     out = {}
     for i in range(0, len(ids), 100):
@@ -96,7 +109,7 @@ def fetch_token_bids(token_ids):
         except FetchError:
             continue
         for b in resp or []:
-            out[str(b.get("asset_id"))] = _best_bid(b)
+            out[str(b.get("asset_id"))] = _bid_ladder(b)
     return out
 
 
@@ -127,14 +140,18 @@ def fetch_quotes(slugs):
             if tid:
                 token_ids.append(tid)
 
+    # Chunk the CLOB books call (like fetch_token_bids). One giant POST of every
+    # token can partially fail / time out under the scan's concurrent load, silently
+    # dropping prices for ~a dozen markets and hiding their arbs.
     books = {}
-    if token_ids:
+    for i in range(0, len(token_ids), 100):
+        chunk = token_ids[i:i + 100]
         try:
-            resp = post_json(CLOB_BOOKS, [{"token_id": t} for t in token_ids])
+            resp = post_json(CLOB_BOOKS, [{"token_id": t} for t in chunk])
             for b in resp or []:
                 books[str(b.get("asset_id"))] = b
         except FetchError:
-            books = {}
+            continue
 
     out = {}
     for slug in uniq:
@@ -142,18 +159,20 @@ def fetch_quotes(slugs):
         if v is None:
             out[slug] = None
             continue
-        ya = _best_ask(books.get(v["yes_id"] or ""))
-        na = _best_ask(books.get(v["no_id"] or ""))
+        ya = _ask_ladder(books.get(v["yes_id"] or ""))
+        na = _ask_ladder(books.get(v["no_id"] or ""))
         out[slug] = {
             "slug": slug,
             "question": v["question"],
             "description": v["description"],
             "image": v["image"],
             "icon": v["icon"],
-            "yes_ask": ya[0] if ya else None,
-            "yes_ask_size": ya[1] if ya else None,
-            "no_ask": na[0] if na else None,
-            "no_ask_size": na[1] if na else None,
+            "yes_ask": ya[0][0] if ya else None,
+            "yes_ask_size": ya[0][1] if ya else None,
+            "yes_asks": ya,
+            "no_ask": na[0][0] if na else None,
+            "no_ask_size": na[0][1] if na else None,
+            "no_asks": na,
             "volume": v["volume"],
             "end_date": v["end_date"],
             "closed": v["closed"],

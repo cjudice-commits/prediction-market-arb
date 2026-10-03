@@ -11,8 +11,13 @@ the *Arb Scanner* sheet only holds script-computed values).
               lose -> (- price)   - fee          (-K-AI in the sheet)
   Min Gain    AA = MIN(W+X, Y+Z)   <- the true guaranteed P&L
   In Between  AD = X+Y             <- P&L in the strike-gap region
-  % Return    AG = pnl / outlay
+  % Return    AG = pnl / outlay          <- outlay is K+L, fees NOT included
   Annualized  AH = AG * (365 / (close - open))
+
+Not in the sheet: `net_return_cash` = pnl / (outlay + fees). AG's numerator is net
+of fees but its denominator isn't, so AG always reads slightly high; the cash
+variant divides by what actually leaves the account. Both are emitted — AG keeps
+sheet parity and gates ARB status, the cash one is the honest return.
 
 A clean arb pays $1 from exactly one leg only when BOTH contracts ask the same
 question (same strike + direction). When strikes differ there is a price band
@@ -22,11 +27,13 @@ all resolution regions and key off the guaranteed worst case, NOT (1 - cost).
 """
 from datetime import date
 
-# Kalshi market statuses that mean the market is no longer live/tradeable.
-# A settled/finalized market still returns prices, but they are stale 1.0/0.0
-# sentinels (e.g. a month-end MINMON whose strike already resolved) and must
-# not be treated as a real quote.
-_DEAD_KALSHI = {"finalized", "settled", "closed", "determined"}
+# Kalshi market statuses whose "prices" are NOT real quotes. Only "active" markets
+# trade; both POST-close (settled/finalized/closed/determined) and PRE-open
+# (initialized/inactive) markets return stale 1.0/0.0 sentinels (yes_ask=0,
+# no_ask=1). Treating those as a quote manufactures phantom ~$1.99 "hedges" against
+# the sentinel leg (the daily KXBTCD ladder before its trading window opens).
+_UNTRADEABLE_KALSHI = {"finalized", "settled", "closed", "determined",
+                       "initialized", "inactive"}
 
 
 def direction(ticker):
@@ -76,6 +83,60 @@ def _scenarios(ks, ps, is_above):
             for p in pts]
 
 
+def _walk_depth(k_ladder, p_ladder, pnl_at, min_edge=0.0):
+    """Walk both ask ladders together, taking contracts while the MARGINAL
+    guaranteed P&L stays above min_edge.
+
+    Why a greedy walk is exact here: every contract in the bundle shares the
+    same worst-case scenario. For a hedged pair both clean regions pay the same
+    (1 - cost - fees, whichever leg wins), so the only region that can differ is
+    the strike gap — and whether that gap is the worst case is set by strike
+    geometry and pairing, NOT by price. The argmin scenario is therefore
+    identical for every contract, so min(sum) == sum(min) exactly and the
+    bundle's guaranteed P&L decomposes into per-contract marginals with no error
+    term. Both ladders ascend in price, so marginal edge falls monotonically:
+    the first level that fails the test is the last one worth taking.
+
+    Fees are recomputed at each level's own prices — Kalshi's rate*p*(1-p) is
+    price-dependent, so a level deeper is a different fee, not just a worse fill.
+
+    Returns (contracts, gain, kalshi_notional, poly_notional, levels).
+    """
+    i = j = 0
+    k_rem = k_ladder[0][1] if k_ladder else 0.0
+    p_rem = p_ladder[0][1] if p_ladder else 0.0
+    ct = gain = k_notional = p_notional = 0.0
+    levels = []
+
+    while i < len(k_ladder) and j < len(p_ladder):
+        k_px, p_px = k_ladder[i][0], p_ladder[j][0]
+        marginal = pnl_at(k_px, p_px)
+        if marginal <= min_edge:
+            break
+        q = min(k_rem, p_rem)
+        if q <= 0:
+            break
+        ct += q
+        gain += marginal * q
+        k_notional += k_px * q
+        p_notional += p_px * q
+        levels.append({
+            "kalshi_price": k_px, "poly_price": p_px,
+            "contracts": q, "pnl_per_contract": marginal,
+        })
+        # Advance whichever side just got eaten (or both, if they tied).
+        k_rem -= q
+        p_rem -= q
+        if k_rem <= 1e-9:
+            i += 1
+            k_rem = k_ladder[i][1] if i < len(k_ladder) else 0.0
+        if p_rem <= 1e-9:
+            j += 1
+            p_rem = p_ladder[j][1] if j < len(p_ladder) else 0.0
+
+    return ct, gain, k_notional, p_notional, levels
+
+
 def evaluate(pair, kq, pq, settings, today=None):
     """Build one scanner row from a pair + its Kalshi/Poly quotes."""
     tkr = pair["kalshi_ticker"]
@@ -101,9 +162,19 @@ def evaluate(pair, kq, pq, settings, today=None):
         "worst_pnl": None,        # guaranteed P&L / contract (sheet "Min Gain")
         "best_pnl": None,         # best-case P&L / contract (sheet "Max Gain")
         "mid_pnl": None,          # strike-gap P&L (sheet "In Between")
-        "net_return": None,       # worst_pnl / combined_cost
+        "net_return": None,       # worst_pnl / combined_cost  (sheet parity)
         "annualized": None,
+        "net_return_cash": None,  # worst_pnl / (combined_cost + total_fee)
+        "annualized_cash": None,
+        "cash_cost": None,        # true cash out the door, per contract
         "max_contracts": None, "total_gain": None,
+        "tob_contracts": None,     # top-of-book size (instantly fillable)
+        "depth_avg_cost": None,    # blended cost across the ladder walk
+        "depth_total_fee": None,   # total fees across the sweep
+        "depth_net_return": None,  # blended return over the whole sweep
+        "depth_net_return_cash": None,
+        "depth_annualized": None,
+        "depth_levels": [],        # the walk itself, for the detail panel
         "poly_volume": (pq or {}).get("volume"),
         "days_to_expiry": None,
         "status": None,
@@ -131,8 +202,9 @@ def evaluate(pair, kq, pq, settings, today=None):
     if not pq:
         row["status"] = "NO POLY"
         return row
-    if not kq or (kq.get("status") in _DEAD_KALSHI):
-        # Settled/finalized Kalshi leg: prices are stale sentinels, not a quote.
+    if not kq or (kq.get("status") in _UNTRADEABLE_KALSHI):
+        # Kalshi leg not tradeable (pre-open or settled): prices are 1.0/0.0
+        # sentinels, not a real quote — don't build a phantom hedge against them.
         row["status"] = "NO KALSHI"
         return row
 
@@ -165,7 +237,11 @@ def evaluate(pair, kq, pq, settings, today=None):
     best = None  # (worst_pnl, ...)
     for label, kside, kp, ksz, pside, pp, psz in cands:
         kfee = kfee_rate * kp * (1 - kp)
-        pfee = pfee_rate * pp * (1 - pp)
+        # Second-leg fee: Polymarket is proportional (rate * p * (1-p)); IBKR
+        # ForecastEx is a FLAT per-contract fee, which the daily adapter passes as
+        # pq["flat_fee"]. Honor that override when present.
+        _flat = pq.get("flat_fee")
+        pfee = _flat if _flat is not None else pfee_rate * pp * (1 - pp)
         k_yes = (kside == "YES")
         p_yes = (pside == "YES")
         pnls = []
@@ -187,14 +263,82 @@ def evaluate(pair, kq, pq, settings, today=None):
     total_fee = kfee + pfee
     net_return = worst / cost if cost else None
 
+    # True cash-on-cash return. `net_return` above divides by the raw prices to
+    # keep workbook parity (AG = pnl/outlay, outlay = K+L), so its numerator is
+    # net of fees but its denominator is not — it always reads slightly HIGH.
+    # Both venues charge their fee at trade time, so the money that actually
+    # leaves the account is price + fee; that's the denominator here, and it's
+    # the same basis Positions already uses for open legs (decisions 2026-07-12).
+    # Kept ALONGSIDE rather than replacing: net_return gates ARB status and all
+    # three alert paths, and re-basing it would break comparability with history.
+    cash_cost = cost + total_fee
+    net_return_cash = worst / cash_cost if cash_cost else None
+
     expiry = kq.get("expiry") or pq.get("end_date")
     days = _days_to(expiry, today)
     annualized = (net_return * (365.0 / days)
                   if (net_return is not None and days) else None)
+    annualized_cash = (net_return_cash * (365.0 / days)
+                       if (net_return_cash is not None and days) else None)
 
+    # --- Depth ------------------------------------------------------------
+    # kp/pp/worst/net_return above stay the TOP-OF-BOOK headline: the best rate
+    # on offer, comparable across rows and across time. The walk answers a
+    # different question — how many contracts are actually executable, and for
+    # how many dollars, once you eat back through a thin book.
+    k_yes = (kside == "YES")
+    p_yes = (pside == "YES")
+    _flat_fee = pq.get("flat_fee")
+
+    def _pnl_at(k_px, p_px):
+        """Guaranteed P&L for ONE contract filled at exactly these prices."""
+        kf = kfee_rate * k_px * (1 - k_px)
+        pf = (_flat_fee if _flat_fee is not None
+              else pfee_rate * p_px * (1 - p_px))
+        return min(_leg(k_px, kf, kt == k_yes) + _leg(p_px, pf, pt == p_yes)
+                   for kt, pt in scen)
+
+    k_lad = (kq.get("yes_asks") if k_yes else kq.get("no_asks")) or []
+    p_lad = (pq.get("yes_asks") if p_yes else pq.get("no_asks")) or []
+    d_ct, d_gain, d_kn, d_pn, d_levels = _walk_depth(
+        k_lad, p_lad, _pnl_at, settings.get("depth_min_edge", 0.0))
+
+    # Top-of-book size, kept as its own number so the UI can show how much is
+    # available instantly vs. how much needs working back through the book.
     sizes = [s for s in (ksz, psz) if s is not None]
-    max_contracts = min(sizes) if sizes else None
-    total_gain = worst * max_contracts if max_contracts is not None else None
+    tob_contracts = min(sizes) if sizes else None
+
+    if k_lad and p_lad and d_ct > 0:
+        max_contracts = d_ct
+        total_gain = d_gain
+        depth_avg_cost = (d_kn + d_pn) / d_ct
+        # Blended return over the whole sweep. Fees are re-derived from the
+        # levels (each level's own prices) rather than scaled from the
+        # top-of-book fee, which would be wrong — the fee is price-dependent.
+        d_fee = sum(
+            (kfee_rate * lv["kalshi_price"] * (1 - lv["kalshi_price"])
+             + (_flat_fee if _flat_fee is not None
+                else pfee_rate * lv["poly_price"] * (1 - lv["poly_price"])))
+            * lv["contracts"] for lv in d_levels)
+        d_notional = d_kn + d_pn
+        depth_total_fee = d_fee
+        depth_net_return = d_gain / d_notional if d_notional else None
+        depth_net_return_cash = (d_gain / (d_notional + d_fee)
+                                 if (d_notional + d_fee) else None)
+        depth_annualized = (depth_net_return * (365.0 / days)
+                            if (depth_net_return is not None and days) else None)
+    else:
+        # No real ladder yet (phase 1, before the orderbook call) — fall back to
+        # the historical top-of-book/open-interest sizing, unchanged.
+        max_contracts = tob_contracts
+        total_gain = (worst * tob_contracts
+                      if tob_contracts is not None else None)
+        depth_avg_cost = None
+        depth_total_fee = None
+        depth_net_return = None
+        depth_net_return_cash = None
+        depth_annualized = None
+        d_levels = []
 
     # Favorable basis == strikes match, or the gap region is not a double-loss.
     fav = (ks == ps) or (mid is not None and mid >= -1e-9)
@@ -208,7 +352,17 @@ def evaluate(pair, kq, pq, settings, today=None):
         "total_fee": total_fee,
         "worst_pnl": worst, "best_pnl": bestc, "mid_pnl": mid,
         "net_return": net_return, "annualized": annualized,
+        "net_return_cash": net_return_cash,
+        "annualized_cash": annualized_cash,
+        "cash_cost": cash_cost,
         "max_contracts": max_contracts, "total_gain": total_gain,
+        "tob_contracts": tob_contracts,
+        "depth_avg_cost": depth_avg_cost,
+        "depth_total_fee": depth_total_fee,
+        "depth_net_return": depth_net_return,
+        "depth_net_return_cash": depth_net_return_cash,
+        "depth_annualized": depth_annualized,
+        "depth_levels": d_levels[:12],   # capped: this rides the scan payload
         "days_to_expiry": days,
     })
 

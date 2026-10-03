@@ -15,7 +15,11 @@ _HCACHE = {"ts": 0.0, "payload": None}
 _HLOCK = threading.Lock()
 _PCACHE = {"ts": 0.0, "payload": None}
 _PLOCK = threading.Lock()
-_POS_TTL = 12
+# Must exceed how long run_positions() actually takes (~17s: IBKR's auth_status
+# alone is ~8s). The old 12s was SHORTER than the build, and `ts` is stamped with
+# the time the build STARTED, so every payload was born already-expired and the
+# cache could never serve a hit — every request rebuilt from scratch.
+_POS_TTL = 60
 _DCACHE = {"ts": 0.0, "payload": None}
 _DLOCK = threading.Lock()
 _DAILY_TTL = 6
@@ -68,7 +72,10 @@ def run_scan(force=False):
         rows = _eval()
 
         # Phase 2: for basis-favorable, near/above-breakeven rows, replace the
-        # open-interest proxy with true Kalshi top-of-book size, then re-eval.
+        # open-interest proxy with Kalshi's true ask ladder, then re-eval. The
+        # ladder is what lets calc size the arb by depth rather than by the top
+        # level alone; only these candidates need it, so the call count is
+        # unchanged from when this only fetched top-of-book size.
         cand_tickers = [
             r["kalshi_ticker"] for r in rows
             if r.get("basis_favorable")
@@ -81,6 +88,8 @@ def run_scan(force=False):
                 if sz and kquotes.get(tk):
                     kquotes[tk]["yes_ask_size"] = sz["yes_ask_size"]
                     kquotes[tk]["no_ask_size"] = sz["no_ask_size"]
+                    kquotes[tk]["yes_asks"] = sz["yes_asks"]
+                    kquotes[tk]["no_asks"] = sz["no_asks"]
             rows = _eval()
 
         fetch_ms = int((time.time() - t0) * 1000)
@@ -146,7 +155,7 @@ def run_positions(force=False):
                 (now - _PCACHE["ts"] < _POS_TTL):
             return _PCACHE["payload"]
         payload = positions.run_positions()
-        _PCACHE["ts"] = now
+        _PCACHE["ts"] = time.time()   # age from COMPLETION, not from the start
         _PCACHE["payload"] = payload
         return payload
 

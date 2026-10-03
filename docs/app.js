@@ -1,17 +1,5 @@
 "use strict";
 
-// Surface any uncaught error on-screen. Mobile browsers give no console access,
-// so a silent failure during init would otherwise leave #meta stuck at its
-// initial "connecting…" placeholder with no clue as to why.
-function _showFatal(msg) {
-  const m = document.getElementById("meta");
-  if (m) m.textContent = "error: " + msg;
-}
-window.addEventListener("error", (e) =>
-  _showFatal((e && e.message) || "script error"));
-window.addEventListener("unhandledrejection", (e) =>
-  _showFatal((e && e.reason && e.reason.message) || "load error"));
-
 const ASSET = {
   BTC: "#f7931a", ETH: "#7b87ff", SOL: "#19fb9b", XRP: "#3fb6e8",
   BNB: "#f3ba2f", DOGE: "#c2a633", HYPE: "#22d3a6", ZEC: "#f4b728",
@@ -25,6 +13,7 @@ const COLS_MONTHLY = [
   { k: "combined_cost", t: "Comb $",   f: "px" },
   { k: "worst_pnl",     t: "Min $/ct", f: "s4" },
   { k: "net_return",    t: "Net Ret",  f: "pctBig" },
+  { k: "net_return_cash", t: "Cash Ret", f: "pctBig" },
   { k: "annualized",    t: "Annual",   f: "pct" },
   { k: "max_contracts", t: "Max Ct",   f: "sz" },
   { k: "total_gain",    t: "Tot $",    f: "s2" },
@@ -70,9 +59,18 @@ const endpoint = () => {
   return `./data/${f}.json?t=${Date.now()}`;
 };
 const STATIC_MODE = true;
+// Backend-only elements are stripped from the static page, so $() hands back an
+// inert stub rather than null. `hidden: true` is the right default — anything
+// that asks whether a modal is open gets "closed".
+const _NULLEL = {
+  hidden: true, innerHTML: "", value: "", textContent: "", dataset: {},
+  classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+  querySelector: () => null, querySelectorAll: () => [],
+  addEventListener() {}, removeEventListener() {}, focus() {}, click() {},
+};
 
 let RAW = [], sortKey = "net_return", sortAsc = false, openKey = null;
-const $ = (id) => document.getElementById(id);
+const $ = (id) => document.getElementById(id) || _NULLEL;
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g,
   (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const rid = (r) => (r.asset || "") + "|" + (r.kalshi_ticker || "") +
@@ -181,19 +179,19 @@ function renderHead() {
 
 function activeStatus() {
   const b = document.querySelector("#statusSeg button.on");
-  return b ? b.dataset.s : "";
+  return b ? (b.dataset.s || "") : "";
 }
-function activeAssets() {
-  return [...document.querySelectorAll("#assetChips .ac.on")].map((e) => e.dataset.a);
+// Which segmented button is active: a status filter ("table") or the paired view.
+function activeView() {
+  const b = document.querySelector("#statusSeg button.on");
+  return b && b.dataset.v ? b.dataset.v : "table";
 }
 
 function filtered() {
   const q = $("search").value.trim().toLowerCase();
-  const s = activeStatus(), as = activeAssets(), fav = $("favOnly").checked;
+  const s = activeStatus();
   return RAW.filter((r) => {
     if (s && r.status !== s) return false;
-    if (as.length && !as.includes(r.asset)) return false;
-    if (fav && !r.basis_favorable) return false;
     if (q) {
       const h = `${r.asset} ${r.kalshi_ticker} ${r.poly_slug || ""} ${r.kalshi_title || ""} ${r.poly_question || ""}`.toLowerCase();
       if (!h.includes(q)) return false;
@@ -255,8 +253,26 @@ function drawer(r) {
       ${kv("Binance spot / CF spot", `${r.binance_spot != null ? r.binance_spot.toLocaleString() : "—"} / ${r.cf_spot != null ? r.cf_spot.toLocaleString() : "n/a"}`)}
       ${kv("Feed divergence", fmt(r.divergence, "div"))}` : `
       ${kv("Annualized", fmt(r.annualized, "pct"))}
+      ${kv("Annualized (cash)", fmt(r.annualized_cash, "pct"))}
       ${kv("Total guaranteed $", money(r.total_gain, 2))}
       ${kv("Days to expiry", r.days_to_expiry ?? "—")}`;
+  // Book walk: only worth showing when there's real size behind the top level.
+  const lv = (!hourly && Array.isArray(r.depth_levels)) ? r.depth_levels : [];
+  const depth = lv.length > 1 ? `
+    <div class="depth">
+      <div class="depth-h">Book walk · <b>${Math.round(r.max_contracts).toLocaleString()}</b> ct for <b class="pos">$${(+r.total_gain).toFixed(2)}</b> guaranteed</div>
+      <table class="depth-t">
+        <tr><th>Kalshi</th><th>Poly</th><th>Cost</th><th>Ct</th><th>$/ct</th><th>Subtotal $</th></tr>
+        ${lv.map(l => `<tr>
+          <td>${(l.kalshi_price * 100).toFixed(1)}¢</td>
+          <td>${(l.poly_price * 100).toFixed(1)}¢</td>
+          <td>${((l.kalshi_price + l.poly_price) * 100).toFixed(1)}¢</td>
+          <td>${Math.round(l.contracts).toLocaleString()}</td>
+          <td class="pos">+${(l.pnl_per_contract * 100).toFixed(2)}¢</td>
+          <td>${money(l.pnl_per_contract * l.contracts, 2)}</td></tr>`).join("")}
+      </table>
+      <div class="depth-f">Blended cost ${r.depth_avg_cost != null ? "$" + r.depth_avg_cost.toFixed(4) : "—"} · every level is worst-case positive on its own, but levels past the first need the order worked, not one click.</div>
+    </div>` : "";
   const bd = `<div class="vcard">
     <h4>${hourly ? "Speculative breakdown" : "Arb breakdown"}</h4>
     ${scen}
@@ -265,23 +281,31 @@ function drawer(r) {
       ${kv("Best side", esc(r.best_side || "—"))}
       ${kv("Combined cost", r.combined_cost != null ? "$" + r.combined_cost.toFixed(4) : "—")}
       ${kv("Total fee / ct", r.total_fee != null ? "$" + r.total_fee.toFixed(4) : "—")}
-      ${kv("Net return", fmt(r.net_return, "pctBig"))}
+      ${kv("Cash cost / ct", r.cash_cost != null ? "$" + r.cash_cost.toFixed(4) + ' <span class="muted">(price + fee)</span>' : "—")}
+      ${kv("Net return", fmt(r.net_return, "pctBig") + ' <span class="muted">sheet</span>')}
+      ${kv("Net return (cash)", fmt(r.net_return_cash, "pctBig") + ' <span class="muted">true cash-on-cash</span>')}
       ${kv("Basis %", fmt(r.basis_pct, "pct") + (r.basis_favorable ? ' <span class="pos">✓ favorable</span>' : ' <span class="neg">✗ risk</span>'))}
-      ${kv("Max contracts", r.max_contracts != null ? Math.round(r.max_contracts).toLocaleString() : "—")}
+      ${kv("Max contracts", r.max_contracts != null ? Math.round(r.max_contracts).toLocaleString() + (r.tob_contracts != null && r.max_contracts > r.tob_contracts + 1e-9 ? ` <span class="muted">(${Math.round(r.tob_contracts).toLocaleString()} at top of book)</span>` : "") : "—")}
       ${hRows}
-    </div></div>`;
+    </div>${depth}""</div>`;
   return `<tr class="detail"><td colspan="${COLS().length}">
-    <div class="drawer">${kCard}${pCard}${bd}</div></td></tr>`;
+    <div class="drawer">${bd}${kCard}${pCard}</div></td></tr>`;
 }
 
 function renderBody() {
+  $("pairedWrap").hidden = true;
+  $("grid").hidden = false;
   const rows = sortRows(filtered());
   $("rowCount").textContent = `${rows.length} of ${RAW.length} markets`;
   $("empty").hidden = rows.length > 0;
   const html = [];
   for (const r of rows) {
     const id = rid(r), isOpen = id === openKey;
-    html.push(`<tr class="r${isOpen ? " open" : ""}" data-id="${esc(id)}">` +
+    // Favorable-basis arb: a guaranteed arb PLUS a double-win strike gap (the
+    // "In Between" region pays on BOTH legs -> bonus). mid_pnl > 0 flags it;
+    // plain same-strike arbs have mid_pnl == null.
+    const favBasis = r.status === "ARB" && r.mid_pnl != null && r.mid_pnl > 0;
+    html.push(`<tr class="r${isOpen ? " open" : ""}${favBasis ? " arb-fav" : ""}" data-id="${esc(id)}">` +
       COLS().map((c) => {
         const cls = c.align === "l" ? "l" : "";
         if (c.k === "_mkt") return `<td class="${cls}">${cellMarket(r)}</td>`;
@@ -342,21 +366,48 @@ function renderHero(rows) {
     : "positive guaranteed return, ranked";
   if (!top.length) { h.hidden = true; return; }
   h.hidden = false;
+  const hpct = (v) => v != null ? "+" + (v * 100).toFixed(2) + "%" : "—";
+  const hann = (v) => v != null ? (v * 100).toFixed(0) + "% ann" : "— ann";
+  const hct = (v) => Math.round(v || 0).toLocaleString();
+  // Monthly cards split into two rows: the top-of-book rate (best price, least
+  // size) and the full positive-P&L sweep (most dollars, blended-down rate).
+  // They answer different questions, so showing one without the other misleads.
+  const hbody = (r) => {
+    if (hourly) return `
+      <div class="ret">${hpct(r.net_return)}</div>
+      <div class="meta">
+        <span><b>${r.minutes_to_resolve ?? "—"}m</b> left</span>
+        <span><b>${r.divergence != null ? (r.divergence * 100).toFixed(3) + "%" : "—"}</b> feed Δ</span>
+        <span><b>${hct(r.max_contracts)}</b> ct</span>
+      </div>`;
+    const tobCt = r.tob_contracts != null ? r.tob_contracts : r.max_contracts;
+    const tobGain = (r.worst_pnl || 0) * (tobCt || 0);
+    const deeper = (r.depth_levels || []).length > 1;
+    return `
+      <div class="hsplit">
+        <div class="hrow">
+          <div class="hlbl">Top of book</div>
+          <div class="hnum"><span class="ret">${hpct(r.net_return)}</span><span class="hsub">${hann(r.annualized)}</span></div>
+          <div class="meta"><span><b>${hct(tobCt)}</b> ct</span>
+            <span><b>$${tobGain.toFixed(2)}</b> locked</span></div>
+        </div>
+        <div class="hrow sweep">
+          <div class="hlbl">Full sweep</div>
+          ${deeper ? `
+          <div class="hnum"><span class="ret">${hpct(r.depth_net_return)}</span><span class="hsub">${hann(r.depth_annualized)}</span></div>
+          <div class="meta"><span><b>${hct(r.max_contracts)}</b> ct</span>
+            <span><b>$${(r.total_gain || 0).toFixed(2)}</b> locked</span></div>`
+          : `<div class="hnone">no depth past the top level</div>`}
+        </div>
+      </div>`;
+  };
   $("heroCards").innerHTML = top.map((r) => `
     <div class="hcard${hourly ? " spec" : ""}" data-id="${esc(rid(r))}">
       <div class="glow"></div>
       <div class="top">${thumb(r, 38)}
         <div class="q">${esc(r.kalshi_title || r.poly_question || r.asset)}</div></div>
-      <div class="ret">+${(r.net_return * 100).toFixed(2)}%</div>
-      <div class="meta">
-        ${hourly
-          ? `<span><b>${r.minutes_to_resolve ?? "—"}m</b> left</span>
-             <span><b>${r.divergence != null ? (r.divergence * 100).toFixed(3) + "%" : "—"}</b> feed Δ</span>`
-          : `<span><b>${r.annualized ? (r.annualized * 100).toFixed(0) + "%" : "—"}</b> annual</span>
-             <span><b>$${(r.total_gain || 0).toFixed(2)}</b> locked</span>`}
-        <span><b>${Math.round(r.max_contracts || 0).toLocaleString()}</b> ct</span>
-        <span class="mono">${esc(r.best_side)}</span>
-      </div>
+      ${hbody(r)}
+      <div class="hfoot"><span class="mono">${esc(r.best_side)}</span></div>
     </div>`).join("");
   document.querySelectorAll(".hcard").forEach((c) => c.onclick = () => {
     openKey = c.dataset.id;
@@ -376,182 +427,48 @@ function pnl(n, pct) {
   if (n == null) return '<span class="dimv">—</span>';
   const c = n > 0 ? "pos" : n < 0 ? "neg" : "dimv";
   const p = pct != null ? ` <span class="pp">(${(pct * 100).toFixed(1)}%)</span>` : "";
-  return `<span class="num ${c}">${n > 0 ? "+" : ""}${usd(n)}${p}</span>`;
+  return `<span class="num ${c}">${n > 0 ? "+" : n < 0 ? "-" : ""}${usd(Math.abs(n), 0)}${p}</span>`;
 }
 
-function posThumb(p) {
-  if (p.icon) return `<img class="thumb" style="width:30px;height:30px"
-    src="${esc(p.icon)}" loading="lazy" onerror="this.remove()">`;
-  const a = p.asset ? p.asset.slice(0, 4) : "?";
-  return `<div class="badge" style="width:30px;height:30px;background:${ac(p.asset)}">${esc(a)}</div>`;
+function pctCell(v) {
+  if (v == null) return '<span class="dimv">—</span>';
+  const c = v > 0 ? "pos" : v < 0 ? "neg" : "dimv";
+  return `<span class="num ${c}">${v > 0 ? "+" : ""}${(v * 100).toFixed(1)}%</span>`;
 }
 
-function venuePanel(name, tag, v) {
-  const setup = (body) => `<div class="vcard setup">
-    <h4><span class="tag ${tag}">${name}</span> not connected</h4>${body}</div>`;
-  if (!v || v.configured === false) {
-    if (name === "Polymarket")
-      return setup(`<p>Add your wallet to <code>data/secrets.json</code>:</p>
-        <pre>{ "polymarket_wallet": "0xYourProxyWallet" }</pre>
-        <p class="dimv">Public address only — no private key. Copy
-        <code>data/secrets.example.json</code> to start.</p>`);
-    return setup(`<p>Create a read-only API key in Kalshi → Settings → API Keys,
-      save the private-key file locally, then add to
-      <code>data/secrets.json</code>:</p>
-      <pre>{ "kalshi_key_id": "…",
-  "kalshi_private_key_path": "/abs/path/key.pem" }</pre>
-      <p class="dimv">Signed locally via openssl — the key never leaves your
-      machine. ${v && v.reason === "key_file_not_found"
-        ? '<span class="neg">Key file not found at that path.</span>' : ""}</p>`);
-  }
-  if (v.error)
-    return `<div class="vcard"><h4><span class="tag ${tag}">${name}</span></h4>
-      <p class="neg">${esc(v.error)}</p></div>`;
-  const ps = v.positions || [];
-  const head = `<div class="vc-head">
-    <h4><span class="tag ${tag}">${name}</span> ${ps.length} open</h4>
-    <span class="vc-tot">${usd(v.total_value)}</span></div>`;
-  if (!ps.length)
-    return `<div class="vcard">${head}<p class="dimv">No open positions.</p></div>`;
-  const rows = ps.sort((a, b) => (b.value || 0) - (a.value || 0)).map((p) => `
-    <tr>
-      <td class="l"><div class="mkt">${posThumb(p)}<div class="info">
-        <div class="q" title="${esc(p.market)}">${esc(p.market)}</div>
-        <div class="sub mono">${esc(p.ref || "")}</div></div></div></td>
-      <td><span class="sidetag ${String(p.side).toLowerCase()}">${esc(p.side)}</span></td>
-      <td class="num">${(p.size || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
-      <td class="num mono">${p.avg_price != null ? (+p.avg_price).toFixed(3) : "—"} → ${p.cur_price != null ? (+p.cur_price).toFixed(3) : "—"}</td>
-      <td class="num">${usd(p.cost)}</td>
-      <td class="num">${usd(p.value)}</td>
-      <td class="num">${pnl(p.pnl, p.pnl_pct)}</td>
-    </tr>`).join("");
-  return `<div class="vcard">${head}
-    <table class="ptbl"><thead><tr>
-      <th class="l">Market</th><th>Side</th><th>Size</th>
-      <th>Avg → Cur</th><th>Cost</th><th>Value</th><th>P&amp;L</th>
-    </tr></thead><tbody>${rows}</tbody></table></div>`;
-}
-
-function pairedView(rows) {
-  if (!rows || !rows.length)
-    return `<div class="vcard"><h4>Paired exposure</h4>
-      <p class="dimv">No held positions match a known Kalshi↔Polymarket arb
-      pair (pairs come from the Monthly map). Positions still show under
-      <b>By venue</b>.</p></div>`;
-  const body = rows.map((r) => {
-    const legs = r.legs.map((l) => `<div class="leg2">
-      <span class="tag ${l.venue === "Kalshi" ? "k" : "p"}">${l.venue[0]}</span>
-      <span class="sidetag ${String(l.side).toLowerCase()}">${esc(l.side)}</span>
-      <span class="dimv mono">${esc(l.ref || "")}</span>
-      <span class="num">${(l.size || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-      <span>${pnl(l.pnl)}</span></div>`).join("");
-    return `<tr>
-      <td class="l"><span class="achip" style="background:${ac(r.asset)}22;color:${ac(r.asset)}">${esc(r.asset || "?")}</span>
-        ${r.complete ? '<span class="okpill">paired</span>' : '<span class="onepill">one leg</span>'}</td>
-      <td class="l">${legs}</td>
-      <td class="num">${usd(r.cost)}</td>
-      <td class="num">${usd(r.value)}</td>
-      <td class="num">${pnl(r.pnl, r.pnl_pct)}</td>
-    </tr>`;
-  }).join("");
-  return `<div class="vcard"><h4>Paired / netted exposure</h4>
-    <table class="ptbl"><thead><tr>
-      <th class="l">Pair</th><th class="l">Legs</th>
-      <th>Cost</th><th>Value</th><th>Net P&amp;L</th>
-    </tr></thead><tbody>${body}</tbody></table></div>`;
-}
-
-function historyCard(name, tag, rows, note) {
-  const head = `<div class="vc-head">
-    <h4><span class="tag ${tag}">${name}</span> ${rows.length} settled${note ? ` <span class="dimv">· ${note}</span>` : ""}</h4>
-    <span class="vc-tot">${pnl(rows.reduce((s, r) => s + (r.realized || 0), 0))}</span></div>`;
-  if (!rows.length)
-    return `<div class="vcard">${head}<p class="dimv">No settled markets found.</p></div>`;
-  const body = rows.slice().sort((a, b) =>
-    (b.settled_date || "").localeCompare(a.settled_date || "")).map((r) => `
-    <tr>
-      <td class="l"><div class="mkt">
-        ${r.icon ? `<img class="thumb" style="width:26px;height:26px" src="${esc(r.icon)}" loading="lazy" onerror="this.remove()">` : ""}
-        <div class="info"><div class="q" title="${esc(r.market)}">${esc(r.market)}</div>
-        <div class="sub mono">${esc(r.settled_date || "")}</div></div></div></td>
-      <td><span class="sidetag ${String(r.result).toLowerCase()}">${esc(r.result)}</span></td>
-      <td><span class="sidetag ${String(r.side).toLowerCase()}">${esc(r.side || "—")}</span></td>
-      <td class="num">${(r.size || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
-      <td class="num">${usd(r.cost)}</td>
-      <td class="num">${usd(r.payout)}</td>
-      <td class="num">${pnl(r.realized)}</td>
-    </tr>`).join("");
-  return `<div class="vcard">${head}
-    <table class="ptbl"><thead><tr>
-      <th class="l">Market</th><th>Result</th><th>Side</th><th>Size</th>
-      <th>Cost</th><th>Payout</th><th>Realized</th>
-    </tr></thead><tbody>${body}</tbody></table></div>`;
-}
-
-function historyView(h) {
-  h = h || {};
-  return `<div class="vstack">
-    ${historyCard("Kalshi", "k", h.kalshi || [], "exact (settlements)")}
-    ${historyCard("Polymarket", "p", h.polymarket || [], "reconstructed · payout derived")}
-  </div>`;
-}
-
-function renderPositions(d) {
-  if (d) POS_DATA = d;
-  d = POS_DATA;
-  const t = d.totals || {};
-  const stat = (n, l, cls) =>
-    `<div class="stat ${cls || ""}"><div class="n">${n}</div><div class="l">${l}</div></div>`;
-  const pstat = (n, l, big) => {
-    if (n == null)
-      return `<div class="stat"><div class="n">—</div><div class="l">${l}</div></div>`;
-    const cls = n > 0 ? "s-arb" : n < 0 ? "s-bad" : "";
-    const v = (n > 0 ? "+" : n < 0 ? "-" : "") +
-      "$" + Math.abs(n).toLocaleString(undefined,
-        { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return `<div class="stat ${cls}${big ? " stat-lg" : ""}">
-      <div class="n">${v}</div><div class="l">${l}</div></div>`;
+function kindBadge(r) {
+  const m = {
+    matched: ["matched", "#16c784", "#16c78422"],
+    "basis+": ["basis +", "#e0a93b", "#e0a93b22"],
+    "basis-": ["basis −", "#ef5350", "#ef535022"],
+    single: ["one leg", "#8a93a6", "#8a93a622"],
   };
-  const strip = `<div class="summary">
-    ${stat(usd(t.poly_value), "Polymarket value")}
-    ${stat(t.kalshi_value == null ? "—" : usd(t.kalshi_value), "Kalshi value")}
-    ${pstat(t.kalshi_pnl, "Kalshi P&L")}
-    ${pstat(t.poly_pnl, "Polymarket P&L")}
-    ${(() => {
-      const n = t.total_pnl, r = t.total_return;
-      if (n == null)
-        return `<div class="stat stat-lg"><div class="n">—</div><div class="l">Total P&L</div></div>`;
-      const cls = n > 0 ? "s-arb" : n < 0 ? "s-bad" : "";
-      const v = (n > 0 ? "+" : n < 0 ? "-" : "") + "$" +
-        Math.abs(n).toLocaleString(undefined,
-          { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      const sub = r == null ? "" :
-        `<div class="stat-sub ${r > 0 ? "pos" : r < 0 ? "neg" : ""}">${r > 0 ? "+" : ""}${(r * 100).toFixed(2)}% return</div>`;
-      return `<div class="stat stat-lg ${cls}"><div class="n">${v}</div>${sub}<div class="l">Total P&L</div></div>`;
-    })()}
-    ${pstat(t.total_realized, "Realized P&L")}
-    ${stat(t.open_positions ?? 0, "Open positions")}
-    ${stat(t.settled_count ?? 0, "Settled")}
-    ${stat(t.paired_count ?? 0, "Complete pairs", "s-arb")}</div>`;
-  const tab = (v, l) =>
-    `<button data-v="${v}" class="${POS_VIEW === v ? "on" : ""}">${l}</button>`;
-  const seg = `<div class="seg posseg">
-    ${tab("venue", "By venue")}${tab("paired", "Paired")}${tab("history", "History")}
-  </div>`;
-  const content = POS_VIEW === "paired" ? pairedView(d.paired)
-    : POS_VIEW === "history" ? historyView(d.history)
-    : `<div class="vstack">
-        ${venuePanel("Polymarket", "p", d.polymarket)}
-        ${venuePanel("Kalshi", "k", d.kalshi)}</div>`;
-  $("positions").innerHTML = strip +
-    `<div class="postoolbar">${seg}
-      <span class="dimv pos-note">Read-only · credentials stay in local
-      data/secrets.json</span></div>` + content;
-  $("positions").querySelectorAll(".posseg button").forEach((b) =>
-    b.onclick = () => {
-      POS_VIEW = b.dataset.v; renderPositions();
-    });
+  const fb = r.complete ? ["paired", "#16c784", "#16c78422"] : m.single;
+  const [label, fg, bg] = m[r.kind] || fb;
+  return `<span class="kindpill" style="background:${bg};color:${fg}">${label}</span>`;
 }
+
+function strikeBand(r) {
+  if (r.low_strike == null && r.high_strike == null) return "";
+  const f = (v) => (v == null ? "?" : v >= 1000 ? `${(v / 1000).toLocaleString()}k` : `${v}`);
+  if (r.kind === "matched") return `<span class="dimv mono">@ ${f(r.low_strike)}</span>`;
+  const lo = Math.min(r.low_strike, r.high_strike);
+  const hi = Math.max(r.low_strike, r.high_strike);
+  return `<span class="dimv mono">${f(lo)}–${f(hi)}</span>`;
+}
+
+// ---- Manual per-pair lot assignment (for ambiguous split legs) -------------
+let ASG_REF = null;
+
+const contraLabel = (c) => {
+  const m = (c.contra_ref || "").match(/-(\d+)$/);
+  return m ? "$" + (+m[1] / 100).toLocaleString() : esc(c.contra_market || c.contra_ref || "?");
+};
+const fmtTs = (ts) => {
+  const d = new Date((ts || 0) * 1000);
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getMonth() + 1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+};
 
 function toast(msg, kind) {
   const t = $("toast");
@@ -565,11 +482,9 @@ function applyChrome() {
   $("summary").hidden = !scanner;
   document.querySelector(".toolbar").hidden = !scanner;
   document.querySelector("main").hidden = !scanner;
-  // Positions + IBKR panels exist only in the full local app, not the static
-  // dashboard build; guard them so a trimmed index.html can't throw here.
-  const pos = $("positions"); if (pos) pos.hidden = scanner;
+  $("positions").hidden = scanner;
   if (!scanner) { $("hero").hidden = true; $("hbanner").hidden = true; }
-  if (MODE !== "daily") { const ik = $("ibkrSetup"); if (ik) ik.hidden = true; }
+  if (MODE !== "daily") $("ibkrSetup").hidden = true;
 }
 
 function showIbkrSetup(payload) {
@@ -603,27 +518,29 @@ async function load(force) {
     MODE === "positions" ? "Loading…" : "Scanning…";
   applyChrome();
   try {
-    // endpoint() already cache-busts via ?t=; in STATIC_MODE there's no backend
-    // to "force", so the old + "?force=1" only produced a malformed double-? URL.
-    const res = await fetch(endpoint());
+    const res = await fetch(endpoint() + (force ? "?force=1" : ""));
     const d = await res.json();
     if (!res.ok) throw new Error(d.error || res.status);
-    if (MODE === "positions") {
-      renderPositions(d);
-      $("meta").textContent =
-        `${d.generated_at} · ${d.totals.open_positions} open`;
-    } else if (MODE === "daily" && d.configured === false) {
+    if (MODE === "daily" && d.configured === false) {
       RAW = [];
       renderSummary({ total: 0 });
-      buildAssetChips();
       renderHero(RAW);
       renderBody();
       showIbkrSetup(d);
       $("meta").textContent = "IBKR not connected";
+    } else if (MODE === "daily" && d.stale_settled) {
+      RAW = [];
+      renderSummary({ total: 0 });
+      renderHero(RAW);
+      renderBody();
+      $("ibkrSetup").hidden = false;
+      $("ibkrSetupTitle").textContent = "Today's ladder settled at 5pm ET.";
+      $("ibkrSetupMsg").innerHTML =
+        ` ${esc(d.message || "Waiting for the next day's contracts to list.")} `;
+      $("meta").textContent = "awaiting next-day ladder";
     } else {
       RAW = d.rows || [];
       renderSummary(d.summary || { total: RAW.length });
-      buildAssetChips();
       renderHero(RAW);
       renderBody();
       updateBanner(d.summary);
@@ -659,23 +576,28 @@ function updateBanner(summary) {
   el.classList.toggle("hot", pct >= 0.3);
 }
 
-function buildAssetChips() {
-  const el = $("assetChips");
-  if (el.dataset.built) return;
-  const assets = [...new Set(RAW.map((r) => r.asset))].filter(Boolean).sort();
-  el.innerHTML = assets.map((a) =>
-    `<span class="ac" data-a="${a}"><span class="blob" style="background:${ac(a)}"></span>${a}</span>`).join("");
-  el.dataset.built = "1";
-  el.querySelectorAll(".ac").forEach((c) => c.onclick = () => {
-    c.classList.toggle("on"); renderBody();
-  });
-}
+// ---- Prepare-trade ticket (Step 1: read-only preview, places no orders) ----
+let TICKET = null;
 
-async function loadSettings() {
-  const s = await (await fetch("/api/settings")).json();
-  s_kfee.value = s.kalshi_fee_rate; s_pfee.value = s.poly_fee_rate;
-  s_minret.value = s.min_net_return; s_minvol.value = s.min_poly_volume;
-  s_minct.value = s.min_contracts;
+const hostShort = (h) => (h || "").replace(/^https?:\/\//, "");
+const timeoutMsg = (e, what) => (e && e.name === "AbortError")
+  ? `${what} timed out — Kalshi/Polymarket were slow to respond. Try again.`
+  : `${what} failed: ${(e && e.message) || e}`;
+
+// ---- Polymarket hedge leg (signer sidecar) ----
+
+function polyResultHTML(d) {
+  const sp = d.order_spec || {};
+  const banner = d.posted
+    ? `<div class="tk-banner placed"><b>✅ POLY HEDGE PLACED.</b></div>`
+    : `<div class="tk-banner failed"><b>✗ POLY NOT PLACED.</b> ${esc(d.error || "Polymarket rejected the order.")}</div>`;
+  const line = `<div class="tk-order">
+      <span class="tag p">Polymarket</span><span class="tk-buy">BUY</span>
+      <span class="tk-sz">${(sp.size || 0).toLocaleString()}<span class="dimv"> sh</span></span>
+      <span class="tk-px">@ $${sp.price != null ? (+sp.price).toFixed(3) : "—"}</span>
+    </div>`;
+  return `${banner}<div class="tk-orders">${line}</div>
+    <div class="dimv" style="margin-top:6px">${esc(d.hedge_note || "")}</div>`;
 }
 
 function wire() {
@@ -686,54 +608,50 @@ function wire() {
     MODE = b.dataset.m;
     openKey = null;
     sortKey = "net_return"; sortAsc = false;
-    const ac = $("assetChips"); ac.dataset.built = ""; ac.innerHTML = "";
+    SCAN_POS = null;
+    $("pairedWrap").hidden = true;
+    $("pairedBtn").hidden = (MODE !== "monthly");
     document.querySelector("#statusSeg button.on")?.classList.remove("on");
     document.querySelector('#statusSeg button[data-s=""]').classList.add("on");
     $("search").value = "";
     renderHead();
     load(true);
   });
+  $("pairedBtn").hidden = (MODE !== "monthly");
   $("refresh").onclick = () => load(true);
   $("search").addEventListener("input", renderBody);
-  $("favOnly").addEventListener("change", renderBody);
   document.querySelectorAll("#statusSeg button").forEach((b) => b.onclick = () => {
     document.querySelector("#statusSeg button.on")?.classList.remove("on");
     b.classList.add("on"); renderBody();
   });
   let timer = null;
-  // Auto-refresh + settings exist only in the full local app; the static
-  // dashboard build omits those elements. Guard each binding so a trimmed
-  // index.html can't throw here and abort wiring before the initial load().
-  const autoEl = $("auto");
-  if (autoEl) autoEl.onchange = (e) => {
+  $("auto").onchange = (e) => {
     clearInterval(timer);
-    if (e.target.checked) { load(true); timer = setInterval(() => load(true), 8000); }
+    // Pause auto-refresh while the trade ticket is open — the heavy force=1 scan
+    // competes with the modal's quote re-checks for the browser's connection pool
+    // (~6/host), which is what made "Re-checking the live edge…" appear to hang.
+    if (e.target.checked) {
+      load(true);
+      timer = setInterval(() => { if ($("ticketModal").hidden) load(true); }, 8000);
+    }
   };
-  const setBtn = $("settingsBtn");
-  if (setBtn) setBtn.onclick = async () => {
-    await loadSettings(); $("settingsModal").hidden = false;
-  };
-  $("closeSettings")?.addEventListener("click", () => ($("settingsModal").hidden = true));
-  const saveBtn = $("saveSettings");
-  if (saveBtn) saveBtn.onclick = async () => {
-    const body = {
-      kalshi_fee_rate: +s_kfee.value, poly_fee_rate: +s_pfee.value,
-      min_net_return: +s_minret.value, min_poly_volume: +s_minvol.value,
-      min_contracts: +s_minct.value,
-    };
-    const r = await fetch("/api/settings", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    if (r.ok) { $("settingsModal").hidden = true; toast("Saved — rescanning", "ok"); load(true); }
-    else toast("Save failed", "err");
-  };
+
+  // prepare-ticket modal controls
+
+  // pair-assignment modal controls
+  const closeAsg = () => ($("assignModal").hidden = true);
+  $("asgClose").onclick = closeAsg;
+  $("asgCancel").onclick = closeAsg;
+  $("assignModal").addEventListener("click", (e) => {
+    if (e.target === $("assignModal")) closeAsg();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (!$("assignModal").hidden) return closeAsg();
+  });
 }
 
-try {
-  renderHead();
-  wire();
-  load(false);
-} catch (e) {
-  _showFatal(e && e.message ? e.message : "init failed");
-}
+renderHead();
+wire();
+load(false);

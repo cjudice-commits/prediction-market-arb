@@ -5,16 +5,16 @@ Kalshi rate-limits aggressively, so we do NOT fetch per ticker. Instead:
   fetch_quotes()  -> ONE batched GET /markets?tickers=a,b,c... (chunked +
                       cursor-paged) for prices/status/expiry of every ticker.
   fetch_sizes()   -> /markets/{t}/orderbook, called only for the small set of
-                      basis-favorable candidates, to get true executable
-                      top-of-book size.
+                      basis-favorable candidates, to get the true executable
+                      ask ladder (all levels, not just top of book).
 
 Kalshi binary markets: buying YES is matched against resting NO bids, so the
 size available at the YES ask == size of the best NO bid (and vice versa).
 """
 import re
-from .net import get_json, parallel, FetchError
+from .net import get_json, parallel, FetchError, KALSHI_HOST
 
-BASE = "https://api.elections.kalshi.com/trade-api/v2"
+BASE = KALSHI_HOST + "/trade-api/v2"
 _CHUNK = 80
 
 _MONTHS = {
@@ -60,8 +60,11 @@ def _quote(mkt):
         "yes_ask": _ask(mkt.get("yes_ask_dollars")),
         "no_bid": _f(mkt.get("no_bid_dollars")),
         "no_ask": _ask(mkt.get("no_ask_dollars")),
+        # Depth comes from the orderbook endpoint (fetch_sizes), not /markets.
         "yes_ask_size": None,
         "no_ask_size": None,
+        "yes_asks": None,
+        "no_asks": None,
         "open_interest": _f(mkt.get("open_interest_fp")) or 0.0,
         "status": mkt.get("status"),
         "expiry": (mkt.get("close_time") or "")[:10] or parse_expiry(t or ""),
@@ -96,25 +99,63 @@ def fetch_quotes(tickers):
     return out
 
 
-def _best_bid_size(ladder):
-    """ladder = [[price, size], ...] resting bids -> size at the top bid."""
-    best = None
-    for row in ladder or []:
+def _ask_ladder(bids):
+    """Resting bids on the OPPOSITE side -> this side's ask ladder.
+
+    bids = [[price, size], ...]. Buying YES is matched against resting NO bids,
+    so a NO bid at q is an offer of YES at 1-q. Returns [(ask_price, size), ...]
+    ascending by ask price (best first) — i.e. descending by bid price.
+
+    A bid at 0 would imply a $1.00 ask, which is never executable; that's the
+    same sentinel `_ask` drops on the /markets side, so filter it here too.
+    """
+    out = []
+    for row in bids or []:
         try:
             p, s = float(row[0]), float(row[1])
         except (TypeError, ValueError, IndexError):
             continue
-        if best is None or p > best[0]:
-            best = (p, s)
-    return best[1] if best else None
+        if s > 0 and 0.0 < p < 1.0:
+            out.append((1.0 - p, s))
+    out.sort(key=lambda x: x[0])
+    return out
+
+
+def _bid_ladder(bids):
+    """This side's resting bid ladder, [(price, size), ...] DESCENDING by price
+    (best first) — what you could SELL into, level by level.
+
+    The mirror of `_ask_ladder`: buying YES crosses the resting NO bids, but
+    *selling* YES crosses the resting YES bids, so this reads the same-side
+    ladder directly rather than converting it. Keeping every level (not just the
+    top) is what lets an exit be priced by real depth: a position far larger than
+    the best bid walks DOWN this ladder, getting worse fills the whole way.
+    """
+    out = []
+    for row in bids or []:
+        try:
+            px, sz = float(row[0]), float(row[1])
+        except (TypeError, ValueError, IndexError):
+            continue
+        if sz > 0 and 0.0 < px < 1.0:
+            out.append((px, sz))
+    out.sort(key=lambda x: -x[0])
+    return out
 
 
 def _one_ob(ticker):
     ob = get_json("%s/markets/%s/orderbook" % (BASE, ticker)).get(
         "orderbook_fp", {})
+    yl = _ask_ladder(ob.get("no_dollars"))
+    nl = _ask_ladder(ob.get("yes_dollars"))
     return {
-        "yes_ask_size": _best_bid_size(ob.get("no_dollars")),
-        "no_ask_size": _best_bid_size(ob.get("yes_dollars")),
+        "yes_ask_size": yl[0][1] if yl else None,
+        "no_ask_size": nl[0][1] if nl else None,
+        "yes_asks": yl,
+        "no_asks": nl,
+        # Sell-side depth, for exiting a held position.
+        "yes_bids": _bid_ladder(ob.get("yes_dollars")),
+        "no_bids": _bid_ladder(ob.get("no_dollars")),
     }
 
 
