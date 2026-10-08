@@ -1,9 +1,7 @@
 {
   "active": [
-    "KXBTCMAXMON-BTC-26OCT31-10000000|will-bitcoin-reach-100k-in-october-2026",
-    "KXBTCMINMON-BTC-26OCT31-7750000|will-bitcoin-dip-to-77pt5k-in-october-2026",
-    "KXHYPEMAXMON-HYPE-26OCT31-10000|will-hyperliquid-reach-100-in-october-2026",
-    "KXXRPMINMON-XRP-26OCT31-120|will-xrp-dip-to-1pt2-in-october-2026"
+    "KXBTCMINMON-BTC-26OCT31-6500000|will-bitcoin-dip-to-65k-in-october-2026",
+    "KXHYPEMAXMON-HYPE-26OCT31-10000|will-hyperliquid-reach-100-in-october-2026"
   ],
-  "updated_at": "2026-10-08T15:29:24Z"
+  "updated_at": "2026-10-08T15:34:19Z"
 }
