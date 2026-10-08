@@ -1,9 +1,8 @@
 {
   "active": [
     "KXBTCMAXMON-BTC-26OCT31-10000000|will-bitcoin-reach-100k-in-october-2026",
-    "KXBTCMAXMON-BTC-26OCT31-9500000|will-bitcoin-reach-95k-in-october-2026",
-    "KXETHMINMON-ETH-26OCT31-250000|will-ethereum-dip-to-2500-in-october-2026",
-    "KXSOLMINMON-SOL-26OCT31-10000|will-solana-dip-to-100-in-october-2026"
+    "KXBTCMINMON-BTC-26OCT31-7750000|will-bitcoin-dip-to-77pt5k-in-october-2026",
+    "KXXRPMINMON-XRP-26OCT31-120|will-xrp-dip-to-1pt2-in-october-2026"
   ],
-  "updated_at": "2026-10-08T15:19:49Z"
+  "updated_at": "2026-10-08T15:24:27Z"
 }
