@@ -1,7 +1,6 @@
 {
   "active": [
     "KXBTCMAXMON-BTC-26OCT31-10000000|will-bitcoin-reach-100k-in-october-2026",
-    "KXBTCMAXMON-BTC-26OCT31-9000000|will-bitcoin-reach-90k-in-october-2026",
     "KXBTCMAXMON-BTC-26OCT31-9500000|will-bitcoin-reach-95k-in-october-2026",
     "KXBTCMINMON-BTC-26OCT31-6250000|will-bitcoin-dip-to-62pt5k-in-october-2026",
     "KXBTCMINMON-BTC-26OCT31-6500000|will-bitcoin-dip-to-65k-in-october-2026",
@@ -12,5 +11,5 @@
     "KXXRPMAXMON-XRP-26OCT31-220|will-xrp-reach-2pt2-in-october-2026",
     "KXXRPMAXMON-XRP-26OCT31-230|will-xrp-reach-2pt2-in-october-2026"
   ],
-  "updated_at": "2026-10-26T12:54:15Z"
+  "updated_at": "2026-10-26T12:59:15Z"
 }
