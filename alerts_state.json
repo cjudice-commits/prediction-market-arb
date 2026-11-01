@@ -2,11 +2,13 @@
   "active": [
     "KXBTCMAXMON-BTC-26NOV30-9500000|will-bitcoin-reach-95k-in-november-2026",
     "KXBTCMAXMON-BTC-26NOV30-9750000|will-bitcoin-reach-97pt5k-in-november-2026",
+    "KXBTCMINMON-BTC-26NOV30-6500000|will-bitcoin-dip-to-65k-in-november-2026",
+    "KXETHMAXMON-ETH-26NOV30-250000|will-ethereum-reach-2500-in-november-2026",
     "KXSOLMINMON-SOL-26NOV30-7000|will-solana-dip-to-70-in-november-2026",
     "KXXRPMAXMON-XRP-26NOV30-160|will-xrp-reach-1pt6-in-november-2026",
     "KXXRPMAXMON-XRP-26NOV30-180|will-xrp-reach-1pt8-in-november-2026",
     "KXXRPMAXMON-XRP-26NOV30-190|will-xrp-reach-1pt8-in-november-2026",
     "KXXRPMAXMON-XRP-26NOV30-200|will-xrp-reach-2-in-november-2026"
   ],
-  "updated_at": "2026-11-01T18:44:15Z"
+  "updated_at": "2026-11-01T18:49:18Z"
 }
